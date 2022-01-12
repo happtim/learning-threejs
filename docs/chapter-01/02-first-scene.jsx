@@ -1,6 +1,5 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export function Scene() {
 
@@ -26,21 +25,13 @@ export function Scene() {
         camera.lookAt(scene.position);
         
         // create a render and set the size
-        var renderer = new THREE.WebGLRenderer({
-            antialias: true
-        });
+        var renderer = new THREE.WebGLRenderer({antialias: true});
         //renderer.setClearColorHex();
         renderer.setClearColor(new THREE.Color(0xEEEEEE));
         renderer.setSize(width, height);
         renderer.setPixelRatio(window.devicePixelRatio);
         // add the output of the renderer to the html element
         div.appendChild(renderer.domElement);
-
-        // OrbitControls allow a camera to orbit around the object
-        // https://threejs.org/docs/#examples/controls/OrbitControls
-        const orbitControls = new OrbitControls( camera, renderer.domElement );
-        orbitControls.target.copy(scene.position);
-        orbitControls.update();
         
         // show axes in the screen
         var axes = new THREE.AxesHelper(20);
@@ -53,10 +44,7 @@ export function Scene() {
         
         // rotate and position the plane
         plane.rotation.x = -0.5 * Math.PI;
-        plane.position.x = 15;
-        plane.position.y = 0;
-        plane.position.z = 0;
-        
+        plane.position.set(15,0,0);
         // add the plane to the scene
         scene.add(plane);
         
@@ -85,20 +73,9 @@ export function Scene() {
         
         // add the sphere to the scene
         scene.add(sphere);
-        
-        // render the scene
-        function animate() {
 
-            requestAnimationFrame( animate );
-        
-            // required if controls.enableDamping or controls.autoRotate are set to true
-            orbitControls.update();
-        
-            renderer.render( scene, camera );
-        
-        }
-
-        animate();
+        // call the render function
+        renderer.render(scene,camera);
     
     },[]);
 

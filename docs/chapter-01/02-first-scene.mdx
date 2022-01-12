@@ -8,7 +8,7 @@ import { Scene } from './02-first-scene.jsx'
 
 <Scene />
 
-
+<br/>
 
 |对象|描述|
 |---|---|
@@ -18,10 +18,81 @@ import { Scene } from './02-first-scene.jsx'
 |摄像机|摄像机决定着你能所看到的输出结果|
 |轴|分为x，y，z轴。x轴为红色，y轴为绿色，z轴为蓝色|
 
-## 场景(scene),摄像机(camera),渲染器(renderer)
+### 场景(scene),摄像机(camera),渲染器(renderer)
 
 场景是一个容器，主要用于保存、跟踪所要渲染的物体和使用的光源。如果没有THREE.Scene对象，那么Three.js就无法渲染任何物体
 
 摄像机决定了能够在场景看到什么。
 
 渲染器对象，该对象会基于摄像机的角度来计算场景对象在浏览器中会渲染成什么样子。最后WebGLRenderer将会使用电脑显卡来渲染场景
+
+```jsx title='chapter-01/02-first-scene.jsx'
+// create a scene, that will hold all our elements such as objects, cameras and lights.
+var scene  = new THREE.Scene();
+
+// create a camera, which defines where we're looking at.
+var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+
+// position and point the camera to the center of the scene
+camera.position.x = -30;
+camera.position.y = 40;
+camera.position.z = 30;
+camera.lookAt(scene.position);
+
+// create a render and set the size
+var renderer = new THREE.WebGLRenderer({antialias: true});
+
+renderer.setClearColor(new THREE.Color(0xEEEEEE));
+renderer.setSize(width, height);
+renderer.setPixelRatio(window.devicePixelRatio);
+// add the output of the renderer to the html element
+div.appendChild(renderer.domElement);
+```
+
+上面代码中,我们创建了一个场景,一个相机,并且将相机设置了三维坐标和镜头朝向.相机的lookAt方法设置的scene.position默认坐标（0，0，0）， 然后创建了webgl渲染器.
+
+渲染器开启了抗锯齿属性,对象边缘的一些锯齿效果就会平滑一些.
+
+renderer的setClearColor方法设置了背景效果为类似白色
+
+setSize 方法设置了渲染器的的大小,示例代码大小为Canvas父节点div的大小
+
+setPixelRatio 方法设置了屏幕的像素比,通常用于HiDPI设备防止模糊输出Canvas.
+
+
+### 添加其他物体
+
+到目前为止我们已经创建了一个空白的场景,相机,和渲染器,还没有渲染任务的东西,接下来将添加平面和轴
+
+``` jsx title='chapter-01/02-first-scene.jsx'
+// show axes in the screen
+var axes = new THREE.AxesHelper(20);
+scene.add(axes);
+
+// create the ground plane
+var planeGeometry = new THREE.PlaneGeometry(60, 20);
+var planeMaterial = new THREE.MeshBasicMaterial({color: 0xcccccc});
+var plane = new THREE.Mesh(planeGeometry, planeMaterial);
+
+// rotate and position the plane
+plane.rotation.x = -0.5 * Math.PI;
+plane.position.set(15,0,0);
+// add the plane to the scene
+scene.add(plane);
+```
+
+上面代码我们创建了一个轴线,并且设置了它的长度为20,并且添加到了场景中.
+
+我们又创建了一个平面，长度60，宽度20. 除了设置平面的长宽还需要设置外观（颜色和透明度），在Three中我们通过创建材质对象来设置平面的外观。本例中使用了0xcccccc颜色的基本材质
+然后，将平面的大小和外关组合进Mesh对象中生成一个平面变量。 在添加到场景中之前我们将他的位置沿着x轴旋转-90°，也就是-1/2π。
+
+使用同样的方式我们添加了方块和球体添加到平面中，但需需要线框（wireframe）属性为true，这样就不会渲染成一个实体物体。
+
+### 渲染场景(render)
+
+最后我们使用renderer渲染场景，如果没有调用render方法整个的界面为黑色的。
+
+```jsx title='chapter-01/02-first-scene.jsx'
+// call the render function
+renderer.render(scene,camera);
+```

@@ -1,6 +1,5 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export function Scene() {
 
@@ -25,9 +24,7 @@ export function Scene() {
         camera.lookAt(scene.position);
 
         // create a render and set the size
-        var renderer = new THREE.WebGLRenderer({
-            antialias: true,
-        });
+        var renderer = new THREE.WebGLRenderer({antialias: true,});
 
         renderer.setClearColor(new THREE.Color(0xEEEEEE));
         renderer.setSize(width, height);
@@ -40,12 +37,6 @@ export function Scene() {
 
         // add the output of the renderer to the html element
         div.appendChild(renderer.domElement);
-
-        // OrbitControls allow a camera to orbit around the object
-        // https://threejs.org/docs/#examples/controls/OrbitControls
-        const orbitControls = new OrbitControls( camera, renderer.domElement );
-        orbitControls.target.copy(scene.position);
-        orbitControls.update();
 
         // show axes in the screen
         var axes = new THREE.AxesHelper(20);
@@ -60,10 +51,7 @@ export function Scene() {
 
         // rotate and position the plane
         plane.rotation.x = -0.5 * Math.PI;
-        plane.position.x = 15;
-        plane.position.y = 0;
-        plane.position.z = 0;
-
+        plane.position.set(15,0,0);
         // add the plane to the scene
         scene.add(plane);
 
@@ -74,23 +62,17 @@ export function Scene() {
         cube.castShadow = true;
 
         // position the cube
-        cube.position.x = -4;
-        cube.position.y = 3;
-        cube.position.z = 0;
-
+        cube.position.set(-4,3,0);
         // add the cube to the scene
         scene.add(cube);
 
         var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
-        var sphereMaterial = new THREE.MeshLambertMaterial({color: 0x7777ff});
+        var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
         var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-
-        // position the sphere
-        sphere.position.x = 20;
-        sphere.position.y = 4;
-        sphere.position.z = 2;
         sphere.castShadow = true;
 
+        // position the sphere
+        sphere.position.set(20,4,2);
         // add the sphere to the scene
         scene.add(sphere);
 
@@ -98,18 +80,13 @@ export function Scene() {
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
+        spotLight.shadow.camera.far =130;
+        spotLight.shadow.camera.near=40;
         scene.add(spotLight);
 
         // call the render function
-        function animate() {
-            requestAnimationFrame( animate );
-            // required if controls.enableDamping or controls.autoRotate are set to true
-            orbitControls.update();
-            renderer.render( scene, camera );
-        }
-
-        animate();
-
+        renderer.render( scene, camera );
+    
     },[]);
 
     return (

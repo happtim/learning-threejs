@@ -1,7 +1,6 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-import { initStats } from '../init';
+import { initStats,InitGui ,InitScene} from '../init';
 
 export function Scene() {
 
@@ -11,37 +10,11 @@ export function Scene() {
 
         const div = ref.current;
 
-        const width = div.clientWidth
-        const height = div.clientHeight
+        console.log(div,div.clientWidth,div.clientHeight);
 
+        var [scene, camera, renderer] = InitScene(div);
         var stats = initStats();
-
-        // create a scene, that will hold all our elements such as objects, cameras and lights.
-        var scene = new THREE.Scene();
-
-        // create a camera, which defines where we're looking at.
-        var camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
-        // position and point the camera to the center of the scene
-        camera.position.x = -30;
-        camera.position.y = 40;
-        camera.position.z = 30;
-        camera.lookAt(scene.position);
-
-        // create a render and set the size
-        var renderer = new THREE.WebGLRenderer({antialias:true});
-
-        renderer.setClearColor(new THREE.Color(0xEEEEEE));
-        renderer.setSize(width, height);
-        renderer.setPixelRatio(window.devicePixelRatio);
-        renderer.shadowMap.enabled= true;
-        // add the output of the renderer to the html element
-        div.appendChild(renderer.domElement);
-
-        // OrbitControls allow a camera to orbit around the object
-        // https://threejs.org/docs/#examples/controls/OrbitControls
-        const orbitControls = new OrbitControls( camera, renderer.domElement );
-        orbitControls.target.copy(scene.position);
-        orbitControls.update();
+        var gui = InitGui();
 
         // create the ground plane
         var planeGeometry = new THREE.PlaneGeometry(60, 20, 1, 1);
@@ -85,6 +58,12 @@ export function Scene() {
         // add the sphere to the scene
         scene.add(sphere);
 
+        // position and point the camera to the center of the scene
+        camera.position.x = -30;
+        camera.position.y = 40;
+        camera.position.z = 30;
+        camera.lookAt(scene.position);
+
         // add subtle ambient lighting
         var ambientLight = new THREE.AmbientLight(0x0c0c0c);
         scene.add(ambientLight);
@@ -93,31 +72,28 @@ export function Scene() {
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
-        spotLight.shadow.mapSize.width = 10; // default
-        spotLight.shadow.mapSize.height = 10; // default
-        spotLight.shadow.camera.near = 0.5; // default
-        spotLight.shadow.camera.far = 500; // default
         scene.add(spotLight);
-
-        //Create a helper for the shadow camera (optional)
-        const helper = new THREE.CameraHelper( spotLight.shadow.camera );
-        scene.add( helper );
 
         // call the render function
         var step = 0;
- 
+
+        var controls = new function () {
+            this.rotationSpeed = 0.02;
+            this.bouncingSpeed = 0.03;
+        };
+
+        gui.add(controls, 'rotationSpeed', 0, 0.5);
+        gui.add(controls, 'bouncingSpeed', 0, 0.5);
+
         function animate() {
             stats.update();
-
-            orbitControls.update();
-            
             // rotate the cube around its axes
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-            cube.rotation.z += 0.01;
+            cube.rotation.x += controls.rotationSpeed;
+            cube.rotation.y += controls.rotationSpeed;
+            cube.rotation.z += controls.rotationSpeed;
 
             // bounce the sphere up and down
-            step += 0.02;
+            step += controls.bouncingSpeed;
             sphere.position.x = 20 + ( 10 * (Math.cos(step)));
             sphere.position.y = 2 + ( 10 * Math.abs(Math.sin(step)));
 
@@ -128,6 +104,15 @@ export function Scene() {
 
         animate();
 
+        function onResize() {
+            console.log(div,div.clientWidth,div.clientHeight);
+            camera.aspect = div.clientWidth / div.clientHeight;     
+            camera.updateProjectionMatrix();
+            renderer.setSize(div.clientWidth , div.clientHeight);
+        }
+
+        // listen to the resize events
+        window.addEventListener('resize', onResize, false);
 
     },[]);
 
@@ -136,11 +121,13 @@ export function Scene() {
         <div
             style={{
             height: 500 ,
-            display: 'block',
+            position:'relative'
             }}
             ref={ref}
         >
-        <div id="Stats-output" style={{position:'absolute'}}>
+        <div id="Stats-output" >
+        </div>
+        <div id="Gui-output">
         </div>
         </div>
     );
