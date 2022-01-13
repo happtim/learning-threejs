@@ -54,10 +54,7 @@ export function Scene() {
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         
         // position the cube
-        cube.position.x = -4;
-        cube.position.y = 3;
-        cube.position.z = 0;
-        
+        cube.position.set(-4,3,0);
         // add the cube to the scene
         scene.add(cube);
         
@@ -67,10 +64,7 @@ export function Scene() {
         var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
         
         // position the sphere
-        sphere.position.x = 20;
-        sphere.position.y = 4;
-        sphere.position.z = 2;
-        
+        sphere.position.set(20,4,2);
         // add the sphere to the scene
         scene.add(sphere);
 
@@ -84,7 +78,7 @@ export function Scene() {
         <div
             style={{
             height: 500 ,
-            display: 'block',
+            position:'relative'
             }}
             ref={ref}
         >

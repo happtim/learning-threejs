@@ -80,8 +80,6 @@ export function Scene() {
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
-        spotLight.shadow.camera.far =130;
-        spotLight.shadow.camera.near=40;
         scene.add(spotLight);
 
         // call the render function
@@ -94,7 +92,7 @@ export function Scene() {
         <div
             style={{
             height: 500 ,
-            display: 'block',
+            position:'relative'
             }}
             ref={ref}
         >

@@ -1,7 +1,5 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-
-
 import { initStats,InitGui ,InitScene} from '../init';
 
 export function Scene() {
@@ -68,16 +66,16 @@ export function Scene() {
         spotLight.castShadow = true;
         scene.add(spotLight);
 
-        // call the render function
-        var step = 0;
-
         var controls = new function () {
-            this.rotationSpeed = 0.01;
+            this.rotationSpeed = 0.02;
             this.bouncingSpeed = 0.02;
         };
 
         gui.add(controls, 'rotationSpeed', 0, 0.5);
         gui.add(controls, 'bouncingSpeed', 0, 0.5);
+
+        // call the render function
+        var step = 0;
 
         function animate() {
 
@@ -90,7 +88,7 @@ export function Scene() {
             // bounce the sphere up and down
             step += controls.bouncingSpeed;
             sphere.position.x = 20 + ( 10 * (Math.cos(step)));
-            sphere.position.y = 2 + ( 10 * Math.abs(Math.sin(step)));
+            sphere.position.y = 4 + ( 10 * Math.abs(Math.sin(step)));
 
             // render using requestAnimationFrame
             requestAnimationFrame(animate);

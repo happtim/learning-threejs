@@ -1,7 +1,73 @@
 ---
-    title: '11'
+    title: '使用dat.GUI简化试验流程'
 ---
 
 import { Scene} from './05-control-gui.jsx';
 
 <Scene/>
+
+Google员工创建了一个dat.GUI的库，该库可以容易的创建出能够改变变量的界面组件，我们增加这个工具来为我们添加用户调试界面。
+
+### 控制转速，运动速度
+
+```jsx title='docs/init.js'
+import { GUI  } from 'three/examples/jsm/libs/dat.gui.module'
+
+export function InitGui(){
+
+    var gui = new GUI();
+    // Align top-left
+    gui.domElement.style.position = 'absolute';
+    gui.domElement.style.right = '0px';
+    gui.domElement.style.top = '0px';
+    document.getElementById("Gui-output").appendChild(gui.domElement);
+
+    return gui;
+}
+```
+引入了GUI库方式和之前的帧工具一样， 先引入函数库， 初始化的时候新建了一个GUI的对象，将它设置到了Gui-output元素的内。该元素在我们画布元素中新添加的。
+
+```jsx title='chapter-01/05-control-gui.jsx'
+<div
+    style={{
+    height: 500 ,
+    position:'relative'
+    }}
+    ref={ref}
+>
+    <div id="Stats-output" ></div>
+    <div id="Gui-output"></div>
+</div>
+```
+
+接下来我们创建一个javascript对象，该对象用来保存系统data.GUI想改变的属性。 然后将这两对象传给GUI，并设置取值范围。
+```jsx
+var controls = new function () {
+    this.rotationSpeed = 0.02;
+    this.bouncingSpeed = 0.02;
+};
+
+gui.add(controls, 'rotationSpeed', 0, 0.5);
+gui.add(controls, 'bouncingSpeed', 0, 0.5);
+```
+立方体的旋转速度（rotationSpeed）的范围0-0.5，球体的弹跳速度为0-0.5. 接下来我们在animate中直接引用这个两个变量。当我们在UI界面中改变这两个值的时候，也就直接印象了物体的旋转跳跃速度了。
+```jsx
+function animate() {
+
+    stats.update();
+    // rotate the cube around its axes
+    cube.rotation.x += controls.rotationSpeed;
+    cube.rotation.y += controls.rotationSpeed;
+    cube.rotation.z += controls.rotationSpeed;
+
+    // bounce the sphere up and down
+    step += controls.bouncingSpeed;
+    sphere.position.x = 20 + ( 10 * (Math.cos(step)));
+    sphere.position.y = 4 + ( 10 * Math.abs(Math.sin(step)));
+
+    // render using requestAnimationFrame
+    requestAnimationFrame(animate);
+    renderer.render(scene, camera);
+}
+```
+

@@ -9,4 +9,57 @@ import { Scene } from './03-materials-light.jsx'
 <Scene/>
 
 
-### 添加光源
+### 添加光源(SpotLight)
+
+```jsx title='chapter-01/03-materials-light.jsx'
+// add spotlight for the shadows
+var spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(-40, 60, -10);
+spotLight.castShadow = true;
+
+scene.add(spotLight);
+```
+通过new Three.SpotLight创建光源，并设置位置。 通过设置castShadow开启阴影功能。添加了光源之后同步材质在光源的照射下就产生了区别。
+
+```jsx title='chapter-01/03-materials-light.jsx'
+// create a cube
+var cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
+var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
+var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+// position the cube
+cube.position.set(-4,3,0);
+// add the cube to the scene
+scene.add(cube);
+
+var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
+var sphereMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
+var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+// position the sphere
+sphere.position.set(20,4,2);
+// add the sphere to the scene
+scene.add(sphere);
+```
+立方体使用的 MeshLambertMaterial 这个材质是一种暗淡的表面不发光的材质，球体使用的 MeshBasicMaterial 材质是一种基础材质，只会使用指定的颜色渲染，不受光线的影响。
+
+### 添加阴影
+
+通过这样设置材质，立体的效果出来了但是还是缺少阴影的效果。由于渲染阴影需要消耗大量的计算资源，所以默认情况下Three.js不开启渲染阴影。 为了开启阴影效果我们需要对代码做如下增加
+```jsx title='chapter-01/03-materials-light.jsx'
+renderer.setClearColor(new THREE.Color(0xEEEEEE));
+renderer.setSize(width, height);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.shadowMap.enabled= true;
+```
+
+通过设置renderer.shadowMap.enabled为true，告诉渲染器渲染阴影。但是发现还是和原来没有区别。因为还是没有指定那个物体投射阴影，那个物体接受阴影。
+```jsx title='chapter-01/03-materials-light.jsx'
+plane.receiveShadow = true;
+...
+cube.castShadow = true;
+...
+sphere.castShadow = true;
+...
+spotLight.castShadow = true;
+```
+
+我们通过设置对应物体的相应属性为true来执行阴影的效果。 最后我们还有设置SpotLight光源也是可以产生。

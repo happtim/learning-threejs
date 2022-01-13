@@ -1,6 +1,5 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 import { initStats } from '../init';
 
 export function Scene() {
@@ -37,12 +36,6 @@ export function Scene() {
         // add the output of the renderer to the html element
         div.appendChild(renderer.domElement);
 
-        // OrbitControls allow a camera to orbit around the object
-        // https://threejs.org/docs/#examples/controls/OrbitControls
-        const orbitControls = new OrbitControls( camera, renderer.domElement );
-        orbitControls.target.copy(scene.position);
-        orbitControls.update();
-
         // create the ground plane
         var planeGeometry = new THREE.PlaneGeometry(60, 20, 1, 1);
         var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
@@ -51,9 +44,7 @@ export function Scene() {
 
         // rotate and position the plane
         plane.rotation.x = -0.5 * Math.PI;
-        plane.position.x = 15;
-        plane.position.y = 0;
-        plane.position.z = 0;
+        plane.position.set(15,0,0);
 
         // add the plane to the scene
         scene.add(plane);
@@ -65,9 +56,9 @@ export function Scene() {
         cube.castShadow = true;
 
         // position the cube
-        cube.position.x = -4;
-        cube.position.y = 3;
-        cube.position.z = 0;
+        cube.position.set(-4,3,0);
+        // add the cube to the scene
+        scene.add(cube);
 
         // add the cube to the scene
         scene.add(cube);
@@ -75,13 +66,10 @@ export function Scene() {
         var sphereGeometry = new THREE.SphereGeometry(4, 20, 20);
         var sphereMaterial = new THREE.MeshLambertMaterial({color: 0x7777ff});
         var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-
-        // position the sphere
-        sphere.position.x = 20;
-        sphere.position.y = 0;
-        sphere.position.z = 2;
         sphere.castShadow = true;
 
+        // position the sphere
+        sphere.position.set(20,4,2);
         // add the sphere to the scene
         scene.add(sphere);
 
@@ -93,33 +81,23 @@ export function Scene() {
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
-        spotLight.shadow.mapSize.width = 10; // default
-        spotLight.shadow.mapSize.height = 10; // default
-        spotLight.shadow.camera.near = 0.5; // default
-        spotLight.shadow.camera.far = 500; // default
         scene.add(spotLight);
-
-        //Create a helper for the shadow camera (optional)
-        const helper = new THREE.CameraHelper( spotLight.shadow.camera );
-        scene.add( helper );
 
         // call the render function
         var step = 0;
  
         function animate() {
             stats.update();
-
-            orbitControls.update();
             
             // rotate the cube around its axes
-            cube.rotation.x += 0.01;
-            cube.rotation.y += 0.01;
-            cube.rotation.z += 0.01;
+            cube.rotation.x += 0.02;
+            cube.rotation.y += 0.02;
+            cube.rotation.z += 0.02;
 
             // bounce the sphere up and down
             step += 0.02;
             sphere.position.x = 20 + ( 10 * (Math.cos(step)));
-            sphere.position.y = 2 + ( 10 * Math.abs(Math.sin(step)));
+            sphere.position.y = 4 + ( 10 * Math.abs(Math.sin(step)));
 
             // render using requestAnimationFrame
             requestAnimationFrame(animate);
@@ -136,11 +114,11 @@ export function Scene() {
         <div
             style={{
             height: 500 ,
-            display: 'block',
+            position:'relative'
             }}
             ref={ref}
         >
-        <div id="Stats-output" style={{position:'absolute'}}>
+        <div id="Stats-output">
         </div>
         </div>
     );
