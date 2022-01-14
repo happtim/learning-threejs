@@ -21,11 +21,12 @@ export function initStats() {
 
 export function InitGui(){
 
-    var gui = new GUI();
+    var gui = new GUI({autoPlace:false});
     // Align top-left
     gui.domElement.style.position = 'absolute';
     gui.domElement.style.right = '0px';
     gui.domElement.style.top = '0px';
+
     document.getElementById("Gui-output").appendChild(gui.domElement);
 
     return gui;

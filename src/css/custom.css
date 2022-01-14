@@ -26,3 +26,12 @@
 html[data-theme='dark'] .docusaurus-highlight-code-line {
   background-color: rgba(0, 0, 0, 0.3);
 }
+
+/*修改样式覆盖问题*/
+#Gui-output .button{
+  display: none;
+}
+
+#Gui-output li + li {
+  margin-top: 0px;
+}
