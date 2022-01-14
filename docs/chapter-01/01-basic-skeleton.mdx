@@ -1,3 +1,66 @@
 ---
     title: '搭建HTML框架'
 ---
+
+我们使用vite去构建我们基础框架,但是文章后续没有使用这个基础框架,而是使用React组件的方式引入界面到文章中.
+
+新建index.html文档
+
+```html title='chapter-01/index.html'
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+        }
+        canvas{width: 100%; height:100%; display: block;}
+    </style>
+</head>
+<body>
+    <div id="Stats-output">
+    </div>
+    <!-- Div which will hold the Output -->
+    <div id="WebGL-output">
+    </div>
+    //highlight-start
+    <script type="module" src="./01-basic-skeleton.js"></script>
+    //highlight-end
+</body>
+</html>
+```
+
+新建package.json文件, 以来vite前端构建工具, 他的速度比较快. 还以来了three模块.
+
+```json title='chapter-01/package.json'
+{
+  "name": "three-demo",
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "serve": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^2.3.0"
+  },
+  "dependencies": {
+    "three": "^0.128.0"
+  }
+}
+
+```
+
+在目录中初始化项目 并启动项目
+```
+npm install
+npm run dev
+```
+
+打开浏览器,默认输入localhost:3000地址 既可以看到我们使用Three.js编写的第一框架了.后续的改动可以在这个框架基础上修改.
+
+ 

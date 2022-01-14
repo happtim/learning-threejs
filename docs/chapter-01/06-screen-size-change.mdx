@@ -1,7 +1,21 @@
 ---
-    title: '111'
+    title: '场景对浏览器的自适应'
 ---
 
-import { Scene} from './06-screen-size-change.jsx';
+当浏览器大小改变时改变摄像机是很容易实现的。每当浏览器尺寸改变时onResize()方法就会被执行。在onRaise()方法中需要更新摄像机和渲染器
 
-<Scene/>
+[->使用onResize](/onResize)
+
+```jsx title='chapter-01/06-screen-size-change.jsx'
+ // listen to the resize events
+window.addEventListener('resize', onResize, false);
+
+function onResize() {
+    camera.aspect = window.clientWidth / window.clientHeight;     
+    camera.updateProjectionMatrix(); 
+    renderer.setSize(window.clientWidth , window.clientHeight);
+}
+```
+
+对于摄像机，需要更新它的aspect属性，这个属性表示屏幕的长宽比；对于渲染器，需要改变它的尺寸。
+

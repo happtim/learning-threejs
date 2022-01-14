@@ -10,8 +10,6 @@ export function Scene() {
 
         const div = ref.current;
 
-        console.log(div,div.clientWidth,div.clientHeight);
-
         var [scene, camera, renderer] = InitScene(div);
         var stats = initStats();
         var gui = InitGui();
@@ -105,10 +103,9 @@ export function Scene() {
         animate();
 
         function onResize() {
-            console.log(div,div.clientWidth,div.clientHeight);
-            camera.aspect = div.clientWidth / div.clientHeight;     
-            camera.updateProjectionMatrix();
-            renderer.setSize(div.clientWidth , div.clientHeight);
+            camera.aspect = window.innerWidth / window.innerHeight;     
+            camera.updateProjectionMatrix(); 
+            renderer.setSize(window.innerWidth , window.innerHeight);
         }
 
         // listen to the resize events
@@ -120,8 +117,9 @@ export function Scene() {
    
         <div
             style={{
-            height: 500 ,
-            position:'relative'
+            position:'absolute',
+            height:'100%',
+            width:'100%'
             }}
             ref={ref}
         >
