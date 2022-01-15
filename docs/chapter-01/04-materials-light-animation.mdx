@@ -32,7 +32,7 @@ animate();
 
 这样运行起来和我们之前没有什么差别，我们还没有给物体添加任何动画。在使动画动起来之前我们先介绍第一个辅助工具。检测动画帧的工具。使用它前需要引用。
 
-```jsx title='init.js'
+```jsx title='docs/init.js'
 import Stats from 'three/examples/jsm/libs/stats.module'
 
 export function initStats() {
@@ -102,7 +102,7 @@ function animate() {
 }
 ```
 
-![sphere_path_img](./img/sphere_path.jpg)
+![sphere_path_img](./assets/sphere_path.jpg)
 
 球体如果能做出如上的弧线，需要给x，y坐标分别设置不同参数。 先看y坐标的变化，在一个周期内由小到大，可以想到是一个sin函数将x轴下半部分反折上去的函数。
 再看x坐标的变化，在一个周期内是增大或者减小的。可以用sin或者cos表示。 两者现在不是一个周期内所以使用cos函数。
