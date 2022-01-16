@@ -1,7 +1,7 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import { initStats,InitGui ,InitScene} from '../init';
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { InitStats,InitGui ,InitScene} from '../init';
+
 
 export function Scene() {
 
@@ -12,12 +12,9 @@ export function Scene() {
         const div = ref.current;
 
         var [scene, camera, renderer] = InitScene(div);
-        var stats = initStats();
+        var stats = InitStats();
         var gui = InitGui();
-        // OrbitControls allow a camera to orbit around the object
-        // https://threejs.org/docs/#examples/controls/OrbitControls
-        var controls = new OrbitControls( camera, renderer.domElement );
-        controls.target.copy(scene.position);
+
 
         // create the ground plane
         var planeGeometry = new THREE.PlaneGeometry(60, 20, 1, 1);

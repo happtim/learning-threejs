@@ -3,7 +3,7 @@ import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry'
 import { ParametricGeometries } from 'three/examples/jsm/geometries/ParametricGeometries.js'
 import { SceneUtils } from 'three/examples/jsm/utils/SceneUtils'
 import React , { useRef, useEffect }from 'react';
-import { InitScene, initStats,InitGui } from '../init'
+import { InitScene, InitStats,InitGui } from '../init'
 
 export function Scene() {
 
@@ -14,7 +14,7 @@ export function Scene() {
         const div = ref.current;
 
         var [scene, camera, renderer] = InitScene(div);
-        var stats = initStats();
+        var stats = InitStats();
 
         // create the ground plane
         var planeGeometry = new THREE.PlaneGeometry(60, 40, 1, 1);

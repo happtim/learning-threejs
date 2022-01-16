@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import React , { useRef, useEffect }from 'react';
-import { InitScene, initStats,InitGui } from '../init'
+import { InitScene, InitStats,InitGui } from '../init'
 
 export function Scene() {
 
@@ -11,7 +11,7 @@ export function Scene() {
         const div = ref.current;
 
         var [scene, camera, renderer] = InitScene(div);
-        var stats = initStats();
+        var stats = InitStats();
         var gui = InitGui();
 
         scene.fog =  new THREE.Fog(0xffffff, 0.015, 100);

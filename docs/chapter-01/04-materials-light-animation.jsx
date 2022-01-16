@@ -1,6 +1,6 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import { initStats } from '../init';
+import { InitStats } from '../init';
 
 export function Scene() {
 
@@ -13,7 +13,7 @@ export function Scene() {
         const width = div.clientWidth
         const height = div.clientHeight
 
-        var stats = initStats();
+        var stats = InitStats();
 
         // create a scene, that will hold all our elements such as objects, cameras and lights.
         var scene = new THREE.Scene();

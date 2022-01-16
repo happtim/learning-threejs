@@ -1,6 +1,6 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import { initStats,InitGui ,InitScene} from '../init';
+import { InitStats,InitGui ,InitScene} from '../init';
 
 export function Scene() {
 
@@ -8,7 +8,7 @@ export function Scene() {
 
     useEffect(()=>{
 
-        var stats = initStats();
+        var stats = InitStats();
         var gui = InitGui();
 
         const div = ref.current;

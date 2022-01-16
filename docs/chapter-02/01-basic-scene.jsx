@@ -1,6 +1,6 @@
 import * as THREE from "three";
 import React , { useRef, useEffect }from 'react';
-import { InitScene, initStats,InitGui } from '../init'
+import { InitScene, InitStats,InitGui } from '../init'
 
 export function Scene() {
 
@@ -11,7 +11,7 @@ export function Scene() {
         const div = ref.current;
 
         var [scene, camera, renderer] = InitScene(div);
-        var stats = initStats();
+        var stats = InitStats();
         var gui = InitGui();
 
         // create the ground plane
@@ -67,9 +67,7 @@ export function Scene() {
                 cube.castShadow = true;
                 cube.name = "cube-" + scene.children.length;
 
-
                 // position the cube randomly in the scene
-
                 cube.position.x = -30 + Math.round((Math.random() * planeGeometry.parameters.width));
                 cube.position.y = Math.round((Math.random() * 5));
                 cube.position.z = -20 + Math.round((Math.random() * planeGeometry.parameters.height));
