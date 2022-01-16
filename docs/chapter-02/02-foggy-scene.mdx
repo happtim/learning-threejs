@@ -1,0 +1,34 @@
+---
+    title: '给场景添加雾化效果'
+---
+
+使用fog属性就可以为整个场景添加雾化效果.雾化效果是:场景中的物体离摄像机越远就会变得越模糊.
+
+import {  Scene } from './02-foggy-scene.jsx';
+
+<Scene/>
+
+为了更好的观察雾化的效果,可以利用鼠标推拉摄像机,这样就可以观察物体是如何受物化效果影响的.
+
+在场景中增加雾化的方法也很简单.
+
+```jsx title='chapter-02/02-foggy-scene.jsx'
+scene.fog =  new THREE.Fog(0xffffff, 0.015, 100);
+```
+
+我们定义了一个白色的雾化效果(0xffffff), 后面两个参数来调节雾的显示,near(近处)属性值,far(远程)属性值.通过这两个属性值可以决定雾化开始结束的地方.
+THREE.Fog创建对象,雾的浓度是线性增长的,除此之外还有一种雾化效果的方法.
+
+```jsx title='chapter-02/02-foggy-scene.jsx'
+ scene.fog =  new THREE.FogExp2(0xffffff, 0.01);
+```
+
+该方法只需要设置雾的颜色,和浓度(0.01). 需要注意的是,该方法中雾的浓度不再是线性增长的,而是随着距离呈指数增长.
+
+在scenes目录下的三个方法都已经介绍完毕.
+```
+- scenes
+    - Fog.js
+    - FogExp2.js
+    - Scene.js
+```

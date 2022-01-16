@@ -59,5 +59,10 @@ export function InitScene(div)
     // add the output of the renderer to the html element
     div.appendChild(renderer.domElement);
 
+    // OrbitControls allow a camera to orbit around the object
+    // https://threejs.org/docs/#examples/controls/OrbitControls
+    var controls = new OrbitControls( camera, renderer.domElement );
+    controls.target.copy(scene.position);
+
     return [scene,camera,renderer];
 }
