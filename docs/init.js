@@ -3,7 +3,7 @@ import Stats from 'three/examples/jsm/libs/stats.module'
 import { GUI  } from 'three/examples/jsm/libs/dat.gui.module'
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
-export function initStats() {
+export function InitStats() {
 
     var stats = new Stats();
 

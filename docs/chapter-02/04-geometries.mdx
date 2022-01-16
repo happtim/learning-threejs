@@ -1,0 +1,76 @@
+---
+    title: '几何体和网格'
+---
+
+Three.js提供了很多可以在三维场景中使用的几何体.
+
+import {  Scene } from './04-geometries.jsx';
+
+<Scene/>
+
+<br/>
+
+和其他三维库一样,Three.js中几何体基本上是三维空间中的点集和将这些点连接起来的面.
+
+**立方体**:一个立方体有8个顶点,每个顶点都是由(x,y,z)坐标来定义. 一个立方体有6个面,在Three.js中每个面都是包含3个顶点的三角行, 立方体的每个面都是由两个三角形组成的.
+
+当你使用Three.js库提供的几何体时,不需要自己定义几何体的所有顶点和面.对于立方体来说,你只要定义长,宽,高即可.
+
+```jsx title='chapter02/04-geometries.jsx'
+//圆柱体 气缸
+geoms.push(new THREE.CylinderGeometry(1, 4, 4));
+
+//立方体
+geoms.push(new THREE.BoxGeometry(2, 2, 2));
+
+//球体
+geoms.push(new THREE.SphereGeometry(2));
+
+//12面体
+geoms.push(new THREE.IcosahedronGeometry(4));
+
+// create a convex shape (a shape without dents)
+// using a couple of points
+// for instance a cube
+var points = [
+    new THREE.Vector3(2, 2, 2),
+    new THREE.Vector3(2, 2, -2),
+    new THREE.Vector3(-2, 2, -2),
+    new THREE.Vector3(-2, 2, 2),
+    new THREE.Vector3(2, -2, 2),
+    new THREE.Vector3(2, -2, -2),
+    new THREE.Vector3(-2, -2, -2),
+    new THREE.Vector3(-2, -2, 2)
+];
+
+//凸面体
+geoms.push(new ConvexGeometry(points));
+
+// create a lathgeometry
+//http://en.wikipedia.org/wiki/Lathe_(graphics)
+var pts = [];//points array - the path profile points will be stored here
+var detail = .1;//half-circle detail - how many angle increments will be used to generate points
+var radius = 3;//radius for half_sphere
+for (var angle = 0.0; angle < Math.PI; angle += detail)//loop from 0.0 radians to PI (0 - 180 degrees)
+{
+    pts.push(new THREE.Vector3(Math.cos(angle) * radius, 0, Math.sin(angle) * radius));//angle/radius to x,z
+}
+
+//车床
+geoms.push(new THREE.LatheGeometry(pts, 12));
+
+//8面体
+geoms.push(new THREE.OctahedronGeometry(3));
+
+// create a geometry based on a function
+geoms.push(new THREE.ParametricGeometry(ParametricGeometries.mobius3d, 20, 10));
+
+//四面体
+geoms.push(new THREE.TetrahedronGeometry(3));
+
+//圆环体
+geoms.push(new THREE.TorusGeometry(3, 1, 10, 10));
+
+//圆环结
+geoms.push(new THREE.TorusKnotGeometry(3, 0.5, 50, 20));
+```
