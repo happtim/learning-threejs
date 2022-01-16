@@ -1,0 +1,30 @@
+---
+    title: '使用overrideMaterial属性'
+---
+
+我们要介绍的最后一个场景属性是overrideMaterial.当设置了overrideMaterial属性后,场景中所有的物体都会使用该属性指向的材质,即使物体本身也设置了材质.
+当某一个场景中所有物体都共享同一个材质时,使用该属性可以通过减少Three.js管理的材质数量来提高运行效率,但是实际应用中,该属性通常并不非常实用.
+
+
+```jsx title='chapter-02/03-forced-materials'
+scene.overrideMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+```
+
+import {  Scene } from './03-forced-materials.jsx';
+
+<Scene/>
+<br/>
+
+从图中看所有的立方体都使用了相同材质和颜色渲染.在这个示例中我们使用的材质是THREE.MeshLambertMaterial,是一种表面暗淡的对场景中的光有反应的材质.
+
+本节中介绍了Three.js中最核心的概念,场景. 关于场景我要需要记住的是:它是渲染你想使用的物体,光源的容器. 下表列出了最常使用的方法.
+
+|方法|描述|
+|---|---|
+|add(object)|用于对场景中添加对象|
+|children|返回一个场景中的所有对象列表,包括光源和相机|
+|getObjectByName(name,recursive)|在创建对象是可以指定唯一的标识name,使用该方法可以查找特定名字的对象.当recursive为false在调用对象的子元素(children)查找.当参数recursive为ture在调用对象所有后代查找|
+|remove(object)|该方法可以从场景中移除一个对象|
+|traverse(function)|children可以返回场景中的所有对象,该方法可以遍历调用者和调用者的所有后代.|
+|fog|使用该属性可以为场景添加雾化对的效果,可以产生隐藏远处物体的浓雾效果|
+|overrideMaterial|使用该属性可以强制将整个场景中的物体使用相同的材质|
