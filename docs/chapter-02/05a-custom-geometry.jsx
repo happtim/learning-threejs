@@ -4,7 +4,6 @@ import { Geometry,Face3 } from 'three/examples/jsm/deprecated/Geometry'
 
 import React , { useRef, useEffect }from 'react';
 import { InitScene, InitStats,InitGui } from '../init'
-import { BufferGeometry } from "three";
 
 export function Scene() {
 
