@@ -1,0 +1,239 @@
+---
+    title: '自定义几何体'
+---
+
+## Geometry自定义几何体
+
+:::tip Geometry和BufferGeometry
+r125版本之后,THREE.Geometry移除了标准库.把他移动到了/jsm/deprecated/Geometry.js下. 从r125版本之后所有的自带的几何体都继承子BufferGeomtry.
+BufferGeomtry有着更高的效率存储数据来代表一个网格体.Geomtry存储的对象是一个THREE.Vector3和Color数组.Geomtry更方便的阅读和使用,但是对于WebGl渲染慢.
+:::
+
+你使用Three.js库提供的几何体时，不需要自己定义几何体的所有顶点和面。对于立方体来说，你只要定义长、宽、高即可。
+Three.js会基于这些信息在正确的位置创建一个拥有8个顶点和12个三角形面的立方体。
+尽管可以使用Three.js提供的几何体，但是你仍然可以通过定义顶点和面来自定义创建几何体。
+
+
+import {  Scene } from './05a-custom-geometry.jsx';
+
+<Scene/>
+
+<br/>
+
+```jsx title='chapter-02/05a-custom-geometry.jsx'
+var vertices = [
+    new THREE.Vector3(1, 3, 1),
+    new THREE.Vector3(1, 3, -1),
+    new THREE.Vector3(1, -1, 1),
+    new THREE.Vector3(1, -1, -1),
+    new THREE.Vector3(-1, 3, -1),
+    new THREE.Vector3(-1, 3, 1),
+    new THREE.Vector3(-1, -1, -1),
+    new THREE.Vector3(-1, -1, 1)
+];
+
+var faces = [
+    new Face3(0, 2, 1),
+    new Face3(2, 3, 1),
+    new Face3(4, 6, 5),
+    new Face3(6, 7, 5),
+    new Face3(4, 5, 1),
+    new Face3(5, 0, 1),
+    new Face3(7, 6, 2),
+    new Face3(6, 3, 2),
+    new Face3(5, 7, 0),
+    new Face3(7, 2, 0),
+    new Face3(1, 3, 4),
+    new Face3(3, 6, 4),
+];
+
+var geom = new Geometry();
+geom.vertices = vertices;
+geom.faces = faces;
+geom.computeFaceNormals();
+var bufGeom = geom.toBufferGeometry();
+```  
+
+上述代码展示了如何创建简单的立方体。在vertices数组中保存了构成几何体的顶点，在faces数组中保存了由这些顶点连接起来创建的三角形面.
+如:new THREE.Face3(0,2,1)就是使用vertices数组中的第0,2,1个点创建一个三角面.
+
+:::info
+需要注意的是创建面的顶点时的创建顺序，因为顶点顺序决定了某个面是面向摄像机还是背向摄像机的。如果你想创建面向摄像机的面，那么顶点的顺序是顺时针的，反之顶点的顺序是逆时针的。
+:::
+
+:::info
+在以前的Three.js版本里面,可以使用四边形来定义面,在三维建模领域一直有使用三角面或者四边形来创建面的争议.基本上大家都习惯用于四边形来创建面,应为他比三角面更容易增加和平滑.
+但对于渲染器和游戏来说,使用三角面更容易,因为三角形渲染起来效率更高.
+:::
+
+有了这些点和面,我们就可以创建一个HTREE.Geometry对象了.我们把vertices和faces赋值给geometry.最后我们需要在创建几何体上执行computeFaceNormals()方法,该方法会决定每个面法向量,法向量决定于不同面下的颜色.
+
+由于geometry已经废弃了,我们需要使用geometry转成bufferGeometry对象.
+
+
+我们使用的不是一个材质,是两个组成的.我们想显示一个透明的立方体外,还可以显示线框.Three.js可以使用SceneUtils.createMultiMaterialObject来实现多种材质来创建网格.
+
+```jsx title='chapter02/05a-custom-geometry.jsx'
+var materials = [
+    new THREE.MeshLambertMaterial({opacity: 0.6, color: 0x44ff44, transparent: true}),
+    new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true})
+];
+
+var mesh = SceneUtils.createMultiMaterialObject(bufGeom, materials);
+mesh.children.forEach(function (e) {
+    e.castShadow = true
+});
+```
+该方法创建的并不是一个THREE.Mesh对象实例,而是为materils数组中的没一个材质创建一个实例,并把这些实例存储再一个group中.你可以像使用场景中的对象那样使用组.如.添加网格(add),按名称查找(getObjectByName).
+
+在Three.js中大部分物体在绘制之后整个生命周期内是不是变化的. 我们为了要实现更新vertex节点绘制的立体也跟着变化,就需要在render中把我的geomtery重新赋值.
+
+```jsx title='chapter02/05a-custom-geometry.jsx'
+mesh.children.forEach(function (e) {
+    var geom = new Geometry();
+    geom.vertices = vertices;
+    geom.faces = faces;
+    geom.computeFaceNormals();
+    
+    e.geometry = geom.toBufferGeometry();
+});
+```
+在render循环的过程中,我们相当于重建了一个geometry,然后再将它转化为BufferGeometry.
+
+## 另一个种画线框方法(WireframeGeometry)
+
+```jsx title='chapter02/05a-custom-geometry.jsx'
+var wireframe =  new THREE.WireframeGeometry(clonedGeometry);
+var line = new THREE.LineSegments(wireframe);
+line.material.lineWidth = 0;
+line.material.color = new THREE.Color( 0xfffffffe);
+line.translateX(3);
+line.translateZ(3);
+scene.add(line);
+```
+在Three.js还是可以WireframeGeometry方法来添加线框,首先将geometry传入创建一个线框对象.然后基于一个线框对象创建一个LineSegments对象将它添加到场景中.
+相似Line对象也可以,区别在于底层webgl使用函数不同.
+
+## Clone对象
+
+我们说过几何体可以定义物体的形状，添加相应的材质后就可以创建出能够添加到场景中并由Three.js渲染的物体。通过clone()方法我们可以创建出几何体对象的拷贝。
+为了拷贝对象添加不同材质,我们可以创建出不同网格对象.
+
+```jsx title='chapter02/05a-custom-geometry.jsx'
+var clonedGeometry = mesh.children[0].geometry.clone();
+var materials = [
+    new THREE.MeshLambertMaterial({opacity: 0.6, color: 0xff44ff, transparent: true}),
+    new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true})
+];
+
+var mesh2 = SceneUtils.createMultiMaterialObject(clonedGeometry, materials);
+mesh2.children.forEach(function (e) {
+    e.castShadow = true
+});
+
+mesh2.translateX(5);
+mesh2.translateZ(5);
+mesh2.name = "clone";
+scene.remove(scene.getObjectByName("clone"));
+scene.add(mesh2);
+```
+通过这个复制的几何体我们创建了一个新的网格，并命名为mesh2。使用translate()方法移动这个新创建的网格，删除之前的副本（如果存在）并把这个副本添加到场景中。
+
+
+## BufferGeomtry自定义几何体
+
+### BufferGeomtry概念
+在three.js中,BufferGeometry 是用来代表所有几何体的一种方式。 BufferGeometry 本质上是一系列 BufferAttributes 的 名称 。
+每一个 BufferAttribute 代表一种类型数据的数组:位置(position),法线(narmal),颜色(color)，uv,等等... 这些合起来, BufferAttributes 代表每个顶点所有数据的并行数组.
+
+import ThreeAttributes from './assets/threejs-attributes.svg';
+
+<ThreeAttributes width='90%' />;
+
+上面提到，我们有四个属性:position, normal, color, uv.它们指的是并行数组,代表每个属性的第N个数据集属于同一个顶点。index=4的顶点被高亮表示贯穿所有属性的平行数据定义一个顶点。
+
+import CubeFacesVertex from './assets/cube-faces-vertex.svg';
+
+<CubeFacesVertex width='50%'  />
+
+考虑下方块的单个角，不同的面都需要一个不同的法线。法线是面朝向的信息。在图中，在方块的角周围用箭头表示的法线，代表共用顶点位置的面需要指向不同方向的法线。
+一个顶点是所有Geometry组成部分的。如果顶点需要其中任一部分变得不同，那么它必须是一个不同的顶点。
+
+### 绘制方块
+
+:::danger
+再次记住如果顶点有任何独一无二的部分，它必须是不同的顶点。
+:::
+
+下面我们使用BufferGeomtry创建一个方法,方块的每个顶点看似使用的是一个点,但是其实是三个,因为他的法向量是3个.这里创建一个方块需要36个顶点，每个面2个三角形，每个三角形3个顶点，6个面=36个顶点。
+
+import {  Scene as SceneB } from './05b-custom-geometry.jsx';
+
+<SceneB/>
+
+<br/>
+
+下面代码去创建了每个面的两个三角面的每个顶点. 点的顺序是按照我们上面的Face3的顺序一致的. norm为法向量,由于一个面它的法相向量也是一个,我们使用简单的(0,0,1)代表前面的法向量.
+
+```jsx title='chapter02/05b-custom-geomtry.jsx'
+  //8个顶点
+var vertices = [
+    // front
+    {pos: [-1,  3,  1], norm: [ 0,  0,  1]},  // 顶点5
+    {pos: [-1, -1,  1], norm: [ 0,  0,  1]},  // 顶点7
+    {pos: [ 1,  3,  1], norm: [ 0,  0,  1]},  // 顶点0
+
+    {pos: [-1, -1,  1], norm: [ 0,  0,  1]},  // 7
+    {pos: [ 1, -1,  1], norm: [ 0,  0,  1]},  // 2
+    {pos: [ 1,  3,  1], norm: [ 0,  0,  1]},  // 0
+
+    // right
+    ...
+
+    // back
+    ...
+
+    // left
+    ...
+
+    // top
+    ...
+
+    // bottom
+    ...
+];
+```
+
+下图是8个点的一个矩形,按照我们节点的顺序,在立方体中标好顺序了.
+
+import CubeVertexPositions from './assets/cube-vertex-positions.svg';
+
+<CubeVertexPositions width='50%' />
+
+下图我们按照每个面两个三角划分出来三角面.
+
+import CubeTriangles from './assets/cube-triangles.svg';
+
+<CubeTriangles width='50%' />
+
+下图按照前面的,面向相机的逆序排序,画出来点的顺序.
+
+import CubeVertexWindingOrder from './assets/cube-vertex-winding-order.svg';
+
+<CubeVertexWindingOrder width='50%' />
+
+然后我们能将它们全部转换成3个并行数组.最终我们能创建一个 BufferGeometry ，然后为每个数组创建一个 BufferAttribute 并添加到 BufferGeometry 。
+BufferAttribute 是类型数组而不是原生数组,我们将他们转换为 Float32Array 的类型数组TypedArray来节省存储的空间.
+同时 BufferAttribute 需要你设定每个顶点有多少组成成分。对于位置和法线，每个顶点我们需要3个组成成分，x、y和z。对于UVs我们需要2个，u和v.
+
+```jsx title='chapter02/05b-custom-geometry.jsx'
+var geom = new THREE.BufferGeometry();
+for(const vertex of vertices){
+    positions.push(...vertex.pos);
+    normals.push(...vertex.norm);
+}
+geom.setAttribute('position', new THREE.BufferAttribute(new Float32Array( positions), 3));
+geom.setAttribute('normal',new THREE.BufferAttribute(new Float32Array(normals),3));
+```
+
+### 优化方块

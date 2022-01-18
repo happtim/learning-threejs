@@ -28,10 +28,10 @@ html[data-theme='dark'] .docusaurus-highlight-code-line {
 }
 
 /*修改样式覆盖问题*/
-#Gui-output .button{
+div[id^="Gui-output"] .button{
   display: none;
 }
 
-#Gui-output li + li {
+div[id^="Gui-output"] li + li {
   margin-top: 0px;
 }

@@ -18,7 +18,7 @@ import { Scene } from './02-first-scene.jsx'
 |摄像机|摄像机决定着你能所看到的输出结果|
 |轴|分为x，y，z轴。x轴为红色，y轴为绿色，z轴为蓝色|
 
-### 场景(scene),摄像机(camera),渲染器(renderer)
+## 场景(scene),摄像机(camera),渲染器(renderer)
 
 场景是一个容器，主要用于保存、跟踪所要渲染的物体和使用的光源。如果没有THREE.Scene对象，那么Three.js就无法渲染任何物体
 
@@ -60,7 +60,7 @@ setSize 方法设置了渲染器的的大小,示例代码大小为Canvas父节�
 setPixelRatio 方法设置了屏幕的像素比,通常用于HiDPI设备防止模糊输出Canvas.
 
 
-### 添加其他物体
+## 添加其他物体
 
 到目前为止我们已经创建了一个空白的场景,相机,和渲染器,还没有渲染任务的东西,接下来将添加平面和轴
 
@@ -88,7 +88,7 @@ scene.add(plane);
 
 使用同样的方式我们添加了方块和球体添加到平面中，但需需要线框（wireframe）属性为true，这样就不会渲染成一个实体物体。
 
-### 渲染场景(render)
+## 渲染场景(render)
 
 最后我们使用renderer渲染场景，如果没有调用render方法整个的界面为黑色的。
 
