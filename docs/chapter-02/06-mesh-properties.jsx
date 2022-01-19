@@ -84,14 +84,14 @@ export function Scene() {
         guiScale.add(controls, 'scaleZ', 0, 5);
 
         var guiPosition = gui.addFolder('position');
-        var contX = guiPosition.add(controls, 'positionX', -10, 10);
+        var contX = guiPosition.add(controls, 'positionX', -10, 10).onChange(function(){ cube.position.x = controls.positionX;});
         var contY = guiPosition.add(controls, 'positionY', -4, 20);
         var contZ = guiPosition.add(controls, 'positionZ', -10, 10);
 
-        contX.listen();
-        contX.onChange(function (value) {
-            cube.position.x = controls.positionX;
-        });
+        //contX.listen();
+        //contX.onChange(function (value) {
+        //    cube.position.x = controls.positionX;
+        //});
 
         contY.listen();
         contY.onChange(function (value) {

@@ -2,6 +2,75 @@
     title: '网格对象的属性和方法'
 ---
 
+我们已经知道，创建一个网格需要一个几何体，以及一个或多个材质。当网格创建好之后，我们就可以将它添加到场景中并进行渲染。
+下面我们来来看下网格对象提供的属性和方法
+
+|方法(属性)|描述|
+|---|---|
+|position|该属性决定了该对象相对于父对象的位置,通常父对象是scene对象|
+|rotation|该属性可以设置绕每个轴的旋转度弧度.对应的有方法rotateX(),rotateY(),rotateZ()|
+|scale|该属性可以沿着x,y,z缩放对象|
+|translateX(amount)|沿着x轴相对想平移amount距离|
+|translateY(amount)|沿着y轴相对想平移amount距离|
+|translateZ(amount)|沿着z轴相对想平移amount距离,对于平移也是使用translateOnAxis(axis,distance)函数. <br/>该函数允许沿着指定轴平移网格|
+|visible|决定是否会被渲染.false不渲染|
+|castShadow|产生阴影|
+|receiveShadow|接受阴影|
+|children|这个对象子对象,如果场景则返回包括相机,灯光等对象|
+|add()|给一个对象添加子对象|
+|remove()|从一个对象中删除一个子对象|
+|name|对象名称|
+|getObjectByName|通过名称找一个对象|
+
+
 import {  Scene } from './06-mesh-properties.jsx';
 
 <Scene/>
+
+## position
+通过这个属性你可以设置对象在x、y和z轴的坐标。对象的位置是相对于它的父对象来说的，通常父对象就是添加该对象的场景，但有的时候可能是THREE.Object3D对象或其他THREE.Mesh对象。
+
+有三种方式可以设置对象位置.第一种直接设置坐标.
+
+```jsx
+cube.position.x = 10;
+cube.position.y = 3;
+cube.position.z = 1;
+```
+
+第二种可以一次性设置坐标
+```jsx
+cube.position.set(10,3,1);
+```
+第三种,position是一个vertor3对象.可以使用赋值的方式.
+```jsx
+cube.position = new THREE.Vector3(10,3,1);
+```
+
+## rotation
+通过这个属性可以设置对象绕轴的旋转弧度。我们可以像设置position属性那样来设置rotation属性。在数学上物体旋转一周的弧度值为2π，所以可以用如下三种方式设置旋转.
+
+```jsx
+cube.rotation.x = 0.5 * Math.PI;
+cube.rotation.set(0.5 * Math.PI, 0 ,0);
+cube.rotation = new THREE.Vector3(0.5*Math.PI,0,0);
+```
+如果想用度数如果想使用度数（0到360）来设置旋转，那么需要对度数做如下转换:
+```jsx
+var degrees = 45;
+var inRadians = degrees * (Math.PI/ 180); 
+```
+
+## scale
+属性列表中还没有讨论的属性是scale（缩放）。从名字我们就已经知道该属性是用来做什么了。该属性让我们可以沿指定轴缩放对象。如果设置的缩放值小于1，那么物体就会缩小.
+如果设置的缩放值大于1,那么物体就会变大.
+
+同样的它也是Vector3对象. 可以用三种方式给他赋值.
+
+## translate
+使用translate()方法你可以改变对象的位置，但是该方法设置的不是物体的绝对位置，而是物体相对于当前位置的平移距离。
+假设在场景中有个球体，其位置为（1，2，3）。如果我们想让这个对象相对于x轴平移4个单位:translateX(4)，那么物体的位置就会变为（5，2，3）。
+如果我们想重置物体的位置为原来的位置，可以调用translateX(-4)。
+
+## visible
+菜单上最后最后一个属性, 当你点击visible菜单时,你会发现立方体消失了. 
