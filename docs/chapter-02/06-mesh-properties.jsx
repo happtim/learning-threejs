@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import React , { useRef, useEffect }from 'react';
+import React , { useRef, useEffect } from 'react';
 import { InitScene, InitStats,InitGui } from '../init'
 
 export function Scene() {
@@ -84,14 +84,14 @@ export function Scene() {
         guiScale.add(controls, 'scaleZ', 0, 5);
 
         var guiPosition = gui.addFolder('position');
-        var contX = guiPosition.add(controls, 'positionX', -10, 10).onChange(function(){ cube.position.x = controls.positionX;});
+        var contX = guiPosition.add(controls, 'positionX', -10, 10);
         var contY = guiPosition.add(controls, 'positionY', -4, 20);
         var contZ = guiPosition.add(controls, 'positionZ', -10, 10);
 
-        //contX.listen();
-        //contX.onChange(function (value) {
-        //    cube.position.x = controls.positionX;
-        //});
+        contX.listen();//当绑定变量发生变化,同时在空间上显示
+        contX.onChange(function (value) {
+            cube.position.x = controls.positionX;
+        });
 
         contY.listen();
         contY.onChange(function (value) {
