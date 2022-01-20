@@ -36,24 +36,27 @@ import {  Scene } from './06-mesh-properties.jsx';
 cube.position.x = 10;
 cube.position.y = 3;
 cube.position.z = 1;
+//or
+cube.position.setX(10);
+cube.position.setY(3);
+cube.position.setZ(1);
 ```
 
 第二种可以一次性设置坐标
 ```jsx
 cube.position.set(10,3,1);
 ```
-第三种,position是一个vertor3对象.可以使用赋值的方式.
+第三种,position是一个readonly 属性的vertor3对象.可以Vector3的copy方法
 ```jsx
-cube.position = new THREE.Vector3(10,3,1);
+cube.position.copy(new THREE.Vector3(10,3,1));
 ```
 
 ## rotation
-通过这个属性可以设置对象绕轴的旋转弧度。我们可以像设置position属性那样来设置rotation属性。在数学上物体旋转一周的弧度值为2π，所以可以用如下三种方式设置旋转.
+通过这个属性可以设置对象绕轴的旋转弧度。我们可以像设置position属性那样来设置rotation属性。在数学上物体旋转一周的弧度值为2π,旋转弧度设置方式比较多.下面列举几个常用的
 
 ```jsx
 cube.rotation.x = 0.5 * Math.PI;
 cube.rotation.set(0.5 * Math.PI, 0 ,0);
-cube.rotation = new THREE.Vector3(0.5*Math.PI,0,0);
 ```
 如果想用度数如果想使用度数（0到360）来设置旋转，那么需要对度数做如下转换:
 ```jsx

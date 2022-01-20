@@ -129,6 +129,10 @@ export function Scene() {
             cube.rotation.x = controls.rotationX;
             cube.rotation.y = controls.rotationY;
             cube.rotation.z = controls.rotationZ;
+            cube.rotation.set(controls.rotationX,controls.rotationY,controls.rotationZ);
+            cube.rotation.copy(new THREE.Euler(controls.rotationX,controls.rotationY,controls.rotationZ));
+            cube.rotation.fromArray([controls.rotationX,controls.rotationY,controls.rotationZ]);
+            cube.rotation.setFromVector3( new THREE.Vector3( controls.rotationX,controls.rotationY,controls.rotationZ));
 
             cube.scale.set(controls.scaleX, controls.scaleY, controls.scaleZ);
 
