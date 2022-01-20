@@ -2,14 +2,16 @@
     title: '镜头聚焦'
 ---
 
+通常来说，摄像机会指向场景的中心，用坐标来表示就是position(0，0，0)。但是我们可以很容易地改变摄像机所指向的位置
+
+```jsx
+camera.lootAt(new Vector3(x,y,z));
+```
+
 import {  Scene } from './08-cameras-lookat.jsx';
 
 <Scene/>
 
 <br/>
 
-通常来说，摄像机会指向场景的中心，用坐标来表示就是position(0，0，0)。但是我们可以很容易地改变摄像机所指向的位置
-
-```jsx
-camera.lootAt(new Vector3(x,y,z));
-```
+在实例中,发现场景左右移动,其实场景并没有移动,而是相机从不同的点(红点)拍摄场景,带来的效果就是就是从场景中左右移动. 类似人的摇头看东西.
