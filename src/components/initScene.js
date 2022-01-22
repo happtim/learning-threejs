@@ -1,44 +1,5 @@
 import * as THREE from 'three';
-import Stats from 'three/examples/jsm/libs/stats.module'
-import { GUI  } from 'three/examples/jsm/libs/dat.gui.module'
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
-
-export function InitStats(index='') {
-
-    var stats = new Stats();
-
-    stats.setMode(0); // 0: fps, 1: ms
-
-    // Align top-left
-    stats.domElement.style.position = 'absolute';
-    stats.domElement.style.left = '0px';
-    stats.domElement.style.top = '0px';
-
-    if(index){
-        index  = '-' + index;
-    }
-
-    document.getElementById("Stats-output" + index).appendChild(stats.domElement);
-
-    return stats;
-}
-
-export function InitGui(index=''){
-
-    var gui = new GUI({autoPlace:false});
-    // Align top-left
-    gui.domElement.style.position = 'absolute';
-    gui.domElement.style.right = '0px';
-    gui.domElement.style.top = '0px';
-
-    if(index){
-        index  = '-' + index;
-    }
-
-    document.getElementById("Gui-output" + index).appendChild(gui.domElement);
-
-    return gui;
-}
+import { OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export function InitScene(div)
 {

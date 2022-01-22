@@ -3,7 +3,10 @@ import { SceneUtils } from 'three/examples/jsm/utils/SceneUtils'
 import { Geometry,Face3 } from 'three/examples/jsm/deprecated/Geometry'
 
 import React , { useRef, useEffect }from 'react';
-import { InitScene, InitStats,InitGui } from '../init'
+import { InitStats} from '@site/src/components/initStats';
+import { InitScene} from '@site/src/components/InitScene';
+import { InitGui } from '@site/src/components/InitGui';
+
 
 export function Scene() {
 

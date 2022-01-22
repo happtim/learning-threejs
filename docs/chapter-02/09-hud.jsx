@@ -1,6 +1,8 @@
 import * as THREE from "three";
 import React , { useRef, useEffect }from 'react';
-import { InitScene, InitStats,InitGui } from '../init'
+import { InitStats} from '@site/src/components/initStats';
+import { InitScene} from '@site/src/components/InitScene';
+
 
 export function Scene() {
 
@@ -62,7 +64,7 @@ export function Scene() {
         var sceneHUD = new THREE.Scene();
         // Create the camera and set the viewport to match the screen dimensions.
         var cameraHUD = new THREE.OrthographicCamera(-width/20, width/20, height/2, -height/4, 0, 30 );
-        cameraHUD.position = new THREE.Vector3(0,0,0);
+        cameraHUD.position.set(0,0,0);
 
          // Create plane to render the HUD. This plane fill the whole screen.
         var planeGeometry = new THREE.PlaneGeometry( width/20, height/4 );

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Scene } from '../../docs/chapter-01/06-screen-size-change';
+import { Scene } from '@site/docs/chapter-01/06-screen-size-change';
 
 
 

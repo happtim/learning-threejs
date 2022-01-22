@@ -1,7 +1,10 @@
 import * as THREE from "three";
 import React , { useRef, useEffect }from 'react';
-import { InitScene, InitStats,InitGui } from '../init'
 import {OrbitControls} from "three/examples/jsm/controls/OrbitControls";
+import { InitStats} from '@site/src/components/initStats';
+import { InitScene} from '@site/src/components/InitScene';
+import { InitGui } from '@site/src/components/InitGui';
+
 
 export function Scene() {
 
