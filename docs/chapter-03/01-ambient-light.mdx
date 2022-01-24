@@ -1,0 +1,46 @@
+---
+    title: '环境光'
+---
+
+import { Scene} from './01-ambient-light.jsx';
+
+<Scene/>
+
+<br/>
+
+在创建THREE.AmbientLight时,颜色会应用到全局. 这种光没有特定的方向，不会产生阴影。通常不会把AmbientLight作为唯一的光源，而是和SpotLight、DirectionalLight等光源结合使用，从而达到柔化阴影或者添加全局色调的效果。
+
+在上面的案例中,我们可以将SpotLight关闭,来查看AmbientLigth的光源效果. 场景中使用的颜色是0xEEEEEE,类似白色的光. 初始化的环境光是 0x0c0c00c 近似黑色的颜色. 
+当调节环境光的时候就可以感受到所有物体都有了调节的颜色.  指定颜色时要相对保守,设置太亮的颜色会导致整个画面过度饱和. 
+
+除此之外,还可以为环境光设置强度,这一参数决定了光源THREE.AmbientLight对场景中物体颜色的影响程度.
+
+下面的代码展示了如果将THREE.AmbientLight光源和GUI控制菜单关联起来
+
+```jsx title='chapter-03/01-ambient-light.jsx'
+ // add subtle ambient lighting
+var ambiColor = "#0c0c0c";
+var intensity = 1;
+var ambientLight = new THREE.AmbientLight(ambiColor,intensity);
+scene.add(ambientLight);
+
+gui.addColor(controls, 'ambientColor').onChange(function (e) {
+    ambientLight.color = new THREE.Color(e);
+});
+gui.add(controls,'intensity',0,3).onChange(function(e) {
+    ambientLight.intensity = e;
+});
+```
+
+## Color对象
+在Three.js中需要(材质,灯光)指定颜色.可以使用THREE.Color对象,可以像使用环境光时所做的那样,使用一个字符串指定颜色,此时Three.js会将该字符串自动创建一个Three.Color对象.
+构建THREE.Color对象非常灵活.
+
+|方法|描述|
+|---|---|
+|set(value)|将当前颜色值设置成指定十六进制,这个值可以是是字符串,数值,或者已有THREE.Color对象|
+|setHex(value)|将当前颜值设置成指定十六进制值.如:(435241)|
+|setRGB(r,g,b)|根据提供的RGB值设置颜色,参数范围0到1.|
+|setHSL(h,s,l)|根据提供HSL值设置颜色,返回从0到1.|
+|setStyle(vlaue)|根据CSS设置颜色的方式来设置颜色.如:"rgb(255,0,0)","#ff0000","#F00","red"|
+|copy|从提供的颜色赋值颜色值到当前对象|
