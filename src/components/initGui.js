@@ -1,4 +1,5 @@
-import { GUI  } from 'three/examples/jsm/libs/dat.gui.module'
+//import { GUI  } from 'three/examples/jsm/libs/dat.gui.module'
+import GUI from 'lil-gui';
 
 export function InitGui(index=''){
 
