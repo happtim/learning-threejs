@@ -16,8 +16,8 @@ export function Scene() {
         var gui = InitGui();
 
         // create the ground plane
-        var planeGeometry = new THREE.PlaneGeometry(60, 20, 1, 1);
-        var planeMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+        var planeGeometry = new THREE.PlaneGeometry(60, 20, 20, 20);
+        var planeMaterial = new THREE.MeshPhongMaterial({color: 0xffffff});
         var plane = new THREE.Mesh(planeGeometry, planeMaterial);
         plane.receiveShadow = true;
 
@@ -32,7 +32,7 @@ export function Scene() {
 
         // create a cube
         var cubeGeometry = new THREE.BoxGeometry(4, 4, 4);
-        var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff0000});
+        var cubeMaterial = new THREE.MeshLambertMaterial({color: 0xff7777});
         var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
         cube.castShadow = true;
 
@@ -59,35 +59,63 @@ export function Scene() {
 
         // add subtle ambient lighting
         var ambiColor = "#0c0c0c";
-        var intensity = 1;
-        var ambientLight = new THREE.AmbientLight(ambiColor,intensity);
+        var ambientLight = new THREE.AmbientLight(ambiColor);
         scene.add(ambientLight);
 
+        // add spotlight for the shadows
         // add spotlight for the shadows
         var spotLight = new THREE.SpotLight(0xffffff);
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
-        scene.add(spotLight);
+        // scene.add( spotLight );
+
+        var pointColor = "#ccffcc";
+        var pointLight = new THREE.PointLight(pointColor);
+        pointLight.distance = 100;
+        scene.add(pointLight);
+
+
+        // add a small sphere simulating the pointlight
+        var sphereLight = new THREE.SphereGeometry(0.2);
+        var sphereLightMaterial = new THREE.MeshBasicMaterial({color: 0xac6c25});
+        var sphereLightMesh = new THREE.Mesh(sphereLight, sphereLightMaterial);
+        sphereLightMesh.castShadow = true;
+
+        sphereLightMesh.position.x = 3;
+        sphereLightMesh.position.y = 0;
+        sphereLightMesh.position.z = 3;
+        scene.add(sphereLightMesh);
 
         // call the render function
         var step = 0;
 
+        // used to determine the switch point for the light animation
+        var invert = 1;
+        var phase = 0;
+
         var controls = new function () {
-            this.intensity = 1;
-            this.rotationSpeed = 0.02;
+            this.rotationSpeed = 0.03;
             this.bouncingSpeed = 0.03;
             this.ambientColor = ambiColor;
-            this.disableSpotlight = false;
+            this.pointColor = pointColor;
+            this.intensity = 1;
+            this.distance = 100;
         };
 
         gui.addColor(controls, 'ambientColor').onChange(function (e) {
             ambientLight.color = new THREE.Color(e);
         });
-        gui.add(controls,'intensity',0,3).onChange(function(e) {
-            ambientLight.intensity = e;
+
+        gui.addColor(controls, 'pointColor').onChange(function (e) {
+            pointLight.color = new THREE.Color(e);
         });
-        gui.add(controls, 'disableSpotlight').onChange(function (e) {
-            spotLight.visible = !e;
+
+        gui.add(controls, 'intensity', 0, 3).onChange(function (e) {
+            pointLight.intensity = e;
+        });
+
+        gui.add(controls, 'distance', 0, 100).onChange(function (e) {
+            pointLight.distance = e;
         });
 
 
@@ -104,6 +132,24 @@ export function Scene() {
             step += controls.bouncingSpeed;
             sphere.position.x = 20 + ( 10 * (Math.cos(step)));
             sphere.position.y = 2 + ( 10 * Math.abs(Math.sin(step)));
+
+            // move the light simulation
+            if (phase > 2 * Math.PI) {
+                invert = invert * -1;
+                phase -= 2 * Math.PI;
+            } else {
+                phase += controls.rotationSpeed;
+            }
+            sphereLightMesh.position.z = +(7 * (Math.sin(phase)));
+            sphereLightMesh.position.x = +(14 * (Math.cos(phase)));
+            sphereLightMesh.position.y = 5;
+
+            if (invert < 0) {
+                var pivot = 14;
+                sphereLightMesh.position.x = (invert * (sphereLightMesh.position.x - pivot)) + pivot;
+            }
+
+            pointLight.position.copy(sphereLightMesh.position);
 
             // render using requestAnimationFrame
             requestAnimationFrame(render);
@@ -127,4 +173,4 @@ export function Scene() {
         </div>
         </div>
     );
-}
+}     

@@ -1,0 +1,24 @@
+---
+    title: '点光源(PointLight)'
+---
+
+
+Three.js中的Three.PointLight(点光源)是一种单点发光,照射所有方向的光源.
+夜空中的照明弹就是一种很好的点光源的例子.
+
+import { Scene } from './02-point-light.jsx';
+
+<Scene/>
+
+上面场景中,我们为了更好的观察点光源的移动, 用一个橙色小球沿着相同的轨迹移动.随着光源的移动,你将看到红色方块和蓝色的球被这个光源从不同侧面照亮.
+
+|属性|说明|
+|---|---|
+|color|光线的颜色|
+|distance|光线能照耀的距离,默认0.这意味着光的强度不会随着距离增加而减少.|
+|intensity|光线的强度，默认1，浮点数|
+|position|光源的位置|
+|visible|设置为true则打开光源|
+|decay|光源强度随着离开光源的距离而衰减的速度.该值为2时更接近真实世界的效果,默认为1.只有当WebGLRenderer的属性physicallyCorrentLights(物理正确光源)设置为启用时,decay属性才生效|
+|power|当物理正确启用时(WebGLRenderer的属性physicallyCorrectLights),该属性为光源的功率,以流明为单位,默认是4*Math.PI.该属性与intensity属性为简单的线性关系(power=intensity*4π)|
+
