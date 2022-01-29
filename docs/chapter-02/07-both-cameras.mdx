@@ -4,7 +4,7 @@
 
 Three.js提供了两种不同的摄像机,正交投影摄像机和透视投影摄像机
 
-import {  Scene } from './07-both-cameras.jsx';
+import {  Scene } from './07a-both-cameras.jsx';
 
 <Scene/>
 
@@ -50,3 +50,25 @@ import Frustum3d from './assets/frustum-3d.svg';
 
 ![正交投影摄像机](./assets/orthographic-camera.png)
 
+
+
+## 相机帮助助手(CameraHelper))
+
+我们需要更清楚的看到照相机的视野范围.THREE有一个照相机帮助类,此时就需要两个照相机，一个是主照相机，一个是加有辅助线的照相机（有两种，正交和透视，这里辅助的使用的是正交的） 设置两个照相机位置.
+注意，辅助的子照相机要在主照相机里面，这样才能在主照相机的镜头下看到辅助照相机的观察范围
+
+import {  Scene as SceneB } from './07b-both-cameras.jsx';
+
+<SceneB />
+
+
+```jsx title='chapter-02/07b-both-cameras.jsx'
+//正交投影照相机
+var camera2 = new THREE.PerspectiveCamera(45, div.clientWidth /  div.clientHeight, 10, 1000);
+camera2.position.set(120, 60, 180);
+camera2.lookAt(0,0,0);
+
+//照相机帮助线
+var cameraHelper = new CameraHelper(camera2);
+scene.add(cameraHelper);
+```
