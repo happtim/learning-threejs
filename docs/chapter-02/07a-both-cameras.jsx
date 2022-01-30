@@ -3,6 +3,7 @@ import React , { useRef, useEffect }from 'react';
 import { InitStats} from '@site/src/components/initStats';
 import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
+import { OrbitControls} from "three/examples/jsm/controls/OrbitControls";
 
 export function Scene() {
 
@@ -65,7 +66,13 @@ export function Scene() {
 
         var controls = new function () {
             this.perspective = "Perspective";
-            this.switchCamera = function () {
+
+            this.cameraX = camera.position.x;
+            this.cameraY = camera.position.y;
+            this.cameraZ = camera.position.z
+
+            this.switchCamera = function () 
+            {
                 if (camera instanceof THREE.PerspectiveCamera) {
                     camera = new THREE.OrthographicCamera(div.clientWidth / -10, div.clientWidth / 10, div.clientHeight / 10, div.clientHeight / -10, -200, 500);
                     camera.position.x = 120;
@@ -88,17 +95,24 @@ export function Scene() {
                 // OrbitControls allow a camera to orbit around the object
                 // https://threejs.org/docs/#examples/controls/OrbitControls
                 var controls = new OrbitControls( camera, renderer.domElement );
-                controls.target.copy(scene.position);
             };
         };
 
         gui.add(controls, 'switchCamera');
         gui.add(controls, 'perspective').listen();
 
+        var cameraPosition = gui.addFolder('cameraPosition');
+        cameraPosition.add(controls, 'cameraX').listen();
+        cameraPosition.add(controls, 'cameraY').listen();
+        cameraPosition.add(controls, 'cameraZ').listen();
 
         render();
 
         function render() {
+
+            controls.cameraX = camera.position.x;
+            controls.cameraY = camera.position.y;
+            controls.cameraZ = camera.position.z;
 
             stats.update();
             // render using requestAnimationFrame
