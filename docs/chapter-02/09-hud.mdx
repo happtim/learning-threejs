@@ -2,7 +2,55 @@
     title: 'HUD'
 ---
 
+所谓HUD（head-up display，平视显示），是指在屏幕（挡风玻璃）上显示一些辅助信息（例如飞机、汽车的仪表信息），避免驾驶员低头分散注意力。HUD的特点是其显示内容的大小、位置与镜头无关。
 
 import {  Scene } from './09-hud.jsx';
 
 <Scene/>
+
+
+要实现HUB,我们沿用之前的场景,再添加一个显示遮罩的场景,在render的时候两个场景交替渲染.
+
+
+创建另一个场景,包含一个正交摄像机
+```jsx title='chapter-02/09-hud.jsx'
+var sceneHUD = new THREE.Scene();
+// Create the camera and set the viewport to match the screen dimensions.
+var cameraHUD = new THREE.OrthographicCamera(-width/2, width/2, height/2, -height/2, 0, 30 );
+```
+
+为了在屏幕上显示文字.我们使用了纹理,这个在后续的章节会介绍.
+```jsx
+// We will use 2D canvas element to render our HUD.  
+var hudCanvas = document.createElement('canvas');
+
+// Again, set dimensions to fit the screen.
+hudCanvas.width = width;
+hudCanvas.height = height;
+
+// Get 2D context and draw something supercool.
+var hudBitmap = hudCanvas.getContext('2d');
+hudBitmap.font = "Normal 40px Arial";
+hudBitmap.textAlign = 'center';
+hudBitmap.fillStyle = "rgba(245,245,245,0.75)";
+hudBitmap.fillText('Initializing...', width / 2, height / 2);
+
+// Create texture from rendered graphics.
+var hudTexture = new THREE.Texture(hudCanvas) 
+hudTexture.needsUpdate = true;
+```
+创建一个平面,材质使用基础的材质.纹理使用刚才创建的.创建好这个平面后把它假如场景
+```jsx
+// Create plane to render the HUD. This plane fill the whole screen.
+var planeGeometry = new THREE.PlaneGeometry( width , height);
+var planeMaterial = new THREE.MeshBasicMaterial({ map: hudTexture, transparent:true, opacity: 0.7,side: THREE.DoubleSide});
+var plane = new THREE.Mesh( planeGeometry, planeMaterial);
+sceneHUD.add( plane );
+```
+
+最后我们把这个场景也渲染下.
+```jsx
+// Render HUD on top of the scene.
+renderer.render(sceneHUD,cameraHUD);
+```
+
