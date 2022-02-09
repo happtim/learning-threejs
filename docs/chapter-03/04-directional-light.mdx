@@ -1,0 +1,44 @@
+---
+    title: '平行光(DirectionalLight)'
+---
+
+最后一种基本光源是平行光,他发出来的所有光线都是相互平行的.平行光的的一个范例就是太阳光.
+
+import { Scene } from './04-directional-light.jsx';
+
+<Scene/>
+
+<br/>
+
+THREE.DirectionalLight和我们之前看过的THREE.SpotLight之间的主要区别是:平行光不像聚光灯可以通过distance)那样离目标越远越暗淡。被平行光照亮的整个区域接收到的光强是一样的。
+平行光只有光源的方向(Direction),颜色(Color)和强度(Intensity)计算颜色和阴影.
+
+```jsx
+var pointColor = "#ff5808";
+var directionalLight = new THREE.DirectionalLight(pointColor);
+directionalLight.intensity = 0.5;
+directionalLight.position.set(-40, 60, -10);
+directionalLight.castShadow = true;
+
+directionalLight.shadow.mapSize.height = 1024;
+directionalLight.shadow.mapSize.Width = 1024;
+
+scene.add(directionalLight);
+```
+
+由于光是平行的,所以不会形成光锥,而是一个立方的区域, 这个立方体范围内的所有对象都可以投影和接受阴影. 可以开启debug来观察相机,类似一个正交投影.
+通过下来参数可以调节立方体的范围.
+
+```jsx
+directionalLight.shadow.camera.near = 2;
+directionalLight.shadow.camera.far = 200;
+directionalLight.shadow.camera.left = -50;
+directionalLight.shadow.camera.right = 50;
+directionalLight.shadow.camera.top = 50;
+directionalLight.shadow.camera.bottom = -50;
+```
+
+
+:::info
+与THREE.SpotLight一样，包围对象的空间定义得越紧密，投影的效果越好。
+:::
