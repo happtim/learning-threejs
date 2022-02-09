@@ -1,0 +1,95 @@
+---
+    title: '聚光灯源(SpotLight)'
+---
+
+Three.js中的Three.SpotLight(聚光源)是最常使用的光源之一,特别是你想使用阴影的话.他是一个具有锥形效果的光源.你可以把它与手电筒或者灯塔的光进行对比.
+该光产生的光具有方向和角度.
+
+import { Scene } from './03-spot-light.jsx';
+
+<Scene/>
+
+我们先看下构建SpotLight的参数.再看下影响阴影的参数.
+
+|属性|描述|
+|---|---|
+|angle|光锥的夹角，默认Math.PI/3|
+|castShadow|此光源是否可以导致物体产生阴影<br/> 注意:目标物体需要设置receiveShadow|
+|color|光源的颜色|
+|decay|光源强度随着离开光源的距离而衰减的速度.该值为2时更接近真实世界的效果,默认为1.只有当WebGLRenderer的属性physicallyCorrentLights(物理正确光源)设置为启用时,decay属性才生效|
+|distance|光线能照耀的距离,默认0.这意味着光的强度不会随着距离增加而减少.|
+|intensity|光线的强度，默认1，浮点数|
+|penumbra|该属性设置聚光灯的锥型照明区域边缘附近的平滑衰减速度,取值在0-1之间,默认0|
+|position|光源的位置|
+|power|当物理正确启用时(WebGLRenderer的属性physicallyCorrectLights),该属性为光源的功率,以流明为单位,默认是4*Math.PI.该属性与intensity属性为简单的线性关系(power=intensity*4π)|
+|target|此光源指向的目标。光线从光源照向该目标.你可以将SpotLight光源指向场景中的特定位置或者对象.注意,此属性需要一个THREE.Object3D对象(如:THREE.Mesh).与上一章的相机的lookAt方法的THREE.Vector3对象不一样|
+|visible|设置为true则打开光源|
+
+创建一个据光源很简单,只需要只当颜色位置,添加到场景中即可.
+
+```jsx  title='chapter-03/03-spot-light.jsx'
+var pointColor = "#ffffff";
+var spotLight = new THREE.SpotLight(pointColor);
+spotLight.position.set(-40, 60, -10);
+spotLight.castShadow = true;
+spotLight.shadow.camera.near= 2;
+spotLight.shadow.camera.far = 200;
+spotLight.shadow.camera.fov = 30;
+spotLight.target = plane;
+spotLight.distance = 0;
+spotLight.angle = 0.4;
+spotLight.penumbra = 0;
+```
+这里们可以设置一些HTREE.SpotLight独有的属性.其中之一就是target属性.如果我们对蓝色球体设置为target的值. 那么光源就会对着蓝色球体的中心,即使他在场景中移动.
+如果我们不想瞄准任何物体,而是控件任何一个点呢?
+
+```jsx
+var target = new THREE.Object3D();
+target.position.set(5, 0, 0);
+spotLight.target = target;
+```
+
+distance属性和angle属性定义了光锥的形状。angle属性定义了光锥的角度，而distance属性则可以用来设置光锥的长度。
+此外，还有最后一个可以更改THREE.SpotLight光源渲染方式的属性——penumbra属性。通过这个属性，可以设置光强从光锥中心向锥形边缘递减的速度。
+
+
+当SpotLight的caseShadow为true时,可以调节Shadow的属性来改变阴影特性.
+
+|属性|描述|
+|---|---|
+|shadow.bias|用来偏移阴影的位置.当使用非常薄的对象时,可以用它解来解决一些奇怪的效果.如果你看到一些奇怪的阴影效果.将该属性的值设置的很小值(0.01)通常可以解决问题|
+|shadow.camera.far|到光源的的那个一位置可以生成阴影.默认500|
+|shadow.camera.fov|视场大小.默认50|
+|shadow.camera.near|从距离光源的的那个一位置可以生成阴影.默认50|
+|shadow.mapSize.width<br/>shadow.mapSize.height|决定了有多少个像素来来生成阴影.当阴影看起来不平滑的时候,可以增加这个值.默认512.|
+|shadow.radius|当值大于1时,阴影的边缘将有平滑的效果.该属性在THREE.WebGLRenderer.shadowMap.type为THREE.BasicShadowMap时无效|
+
+通过 shadow.camera.near/far/fov 可以控制光线如何投射阴影和在哪里投射阴影.其工作原理和透视相机的工作原理一样.
+通过THREE.CameraHelper可以看到shadow.camera是如何工作的,当实际的阴影和希望的不一样时,使用CameraHelper可以方便的帮助我们发现问题.
+
+```jsx
+var debugCamera = new THREE.CameraHelper(spotLight.shadow.camera);
+scene.add(debugCamera);
+
+function render(){
+    ...
+    debugCamera.update();
+    ...
+}
+```
+
+如果需要调试聚光灯本身存在的问题,可以使用THREE.SpotLightHelper
+
+```jsx
+const spotLightHelper = new THREE.SpotLightHelper(spotLight);
+scene.add( spotLightHelper );
+
+function render(){
+    ...
+    spotLightHelper.update();
+    ...
+}
+```
+
+
+

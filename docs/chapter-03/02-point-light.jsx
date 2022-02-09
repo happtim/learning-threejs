@@ -62,18 +62,14 @@ export function Scene() {
         var ambientLight = new THREE.AmbientLight(ambiColor);
         scene.add(ambientLight);
 
-        // add spotlight for the shadows
-        // add spotlight for the shadows
-        var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(-40, 60, -10);
-        spotLight.castShadow = true;
-        // scene.add( spotLight );
-
         var pointColor = "#ccffcc";
         var pointLight = new THREE.PointLight(pointColor);
         pointLight.distance = 100;
         scene.add(pointLight);
 
+        const sphereSize = 1;
+        const pointLightHelper = new THREE.PointLightHelper(pointLight,sphereSize);
+        scene.add(pointLightHelper);
 
         // add a small sphere simulating the pointlight
         var sphereLight = new THREE.SphereGeometry(0.2);
@@ -150,6 +146,7 @@ export function Scene() {
             }
 
             pointLight.position.copy(sphereLightMesh.position);
+            pointLightHelper.update();
 
             // render using requestAnimationFrame
             requestAnimationFrame(render);
