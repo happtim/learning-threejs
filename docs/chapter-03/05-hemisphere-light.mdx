@@ -1,0 +1,22 @@
+---
+    title: '平行光(DirectionalLight)'
+---
+
+使用THREE.Hemisphere Light，可以创建出更加贴近自然的户外光照效果。如果不使用这个灯光，要模拟户外光照，可以创建一个THREE.DirectionalLight来模拟太阳光，并且可能再添加一个THREE.AmbientLight来为场景提供基础色。但是，这样的光照效果看起来并不怎么自然。在户外，并不是所有的光照都来自上方：很多是来自于大气的散射和地面以及其他物体的反射。
+
+
+import { Scene } from './05-hemisphere-light.jsx';
+
+<Scene/>
+
+<br/>
+
+观察可以发现,球体的底部有接近草地的绿色,而天空有接近天空的蓝色.
+你只需要给他指定接受来自天空的颜色,接受来自地面的颜色,以及这些光的强度.
+
+```jsx title='chapter-03/05-hemisphere-light.jsx'
+var hemiLight = new THREE.HemisphereLight(0x0000ff, 0x00ff00, 0.6);
+hemiLight.position.set(0, 500, 0);
+scene.add(hemiLight);
+```
+
