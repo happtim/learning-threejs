@@ -5,7 +5,6 @@ import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
 import  GrassImageUrl  from '@site/static/img/chapter-03/grasslight-big.jpg';
-import { Vector2 } from 'three';
 
 export function Scene() {
 

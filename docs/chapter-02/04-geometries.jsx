@@ -1,10 +1,13 @@
 import * as THREE from "three";
+import React , { useRef, useEffect }from 'react';
+
 import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry'
 import { ParametricGeometries } from 'three/examples/jsm/geometries/ParametricGeometries.js'
-import { SceneUtils } from 'three/examples/jsm/utils/SceneUtils'
-import React , { useRef, useEffect }from 'react';
+
 import { InitStats} from '@site/src/components/initStats';
 import { InitScene} from '@site/src/components/InitScene';
+
+import * as  SceneUtils from 'three/examples/jsm/utils/SceneUtils';
 
 export function Scene() {
 
