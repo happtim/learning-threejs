@@ -20,11 +20,10 @@ export function Scene() {
         var ground = new THREE.PlaneGeometry(100, 100, 50, 50);
 
         var groundMesh = SceneUtils.createMultiMaterialObject (ground,
-                [new THREE.MeshBasicMaterial({wireframe: true, overdraw: true, color: 0x000000}),
-                    new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5}
-                    )
+                [
+                    new THREE.MeshBasicMaterial({wireframe: true, overdraw: true, color: 0x000000}),
+                    new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5})
                 ]);
-                console.log(groundMesh);
         groundMesh.rotation.x = -0.5 * Math.PI;
         scene.add(groundMesh);
 
@@ -101,11 +100,13 @@ export function Scene() {
                     wireframeLinewidth: 2,
                     wireframe: true
                 }));
-//            scene.add(bboxMesh);
+
+                //scene.add(bboxMesh);
 
                 bboxMesh.position.x = ((box.min.x + box.max.x) / 2);
                 bboxMesh.position.y = ((box.min.y + box.max.y) / 2);
                 bboxMesh.position.z = ((box.min.z + box.max.z) / 2);
+
             }
         };
 

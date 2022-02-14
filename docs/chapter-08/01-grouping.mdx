@@ -1,4 +1,82 @@
+---
+    title: '几何体组合和合并'
+---
+
+本节介绍THREE的两个基本功能:将对象组合在一起,以及多个网格合并.
+
+### 对象的组合
+
+在前面某些章节里使用多种材质时,你已经见过对象组合.当从一个几何体创建网格并且使用多种材质时,Three.js就会创建一个组.
+该几何体的多份副本会添加到这个组里,每份副本都有自己特定的材质.而这个组就是我们得到的结果,看上去就像是一个网格拥有多种材质.但是实际上它是一个包含多个网格的组.
+
+```jsx title='chapter-08/01-grouping.jsx'
+var groundMesh = SceneUtils.createMultiMaterialObject (ground,
+    [
+        new THREE.MeshBasicMaterial({wireframe: true, overdraw: true, color: 0x000000}),
+        new THREE.MeshBasicMaterial({color: 0x00ff00, transparent: true, opacity: 0.5})
+    ]);
+```
+
+创建组很简单,每个你创建的网格对象都可以包含子元素,子元素可以通过add方法来添加. 添加进组的效果是:你可以移动,缩放,旋转和变形父对象,而所有变化也会体现在子对象上.
+
 
 import { Scene } from './01-grouping.jsx';
 
 <Scene/>
+
+<br/>
+
+
+```jsx title='chapter-08/01-grouping.jsx'
+sphere = createMesh(new THREE.SphereGeometry(5, 10, 10));
+cube = createMesh(new THREE.BoxGeometry(6, 6, 6));
+
+group = new THREE.Group();
+group.add(sphere);
+group.add(cube);
+
+scene.add(group);
+```
+
+我们创建了一个Group的对象,该类与THREE.Mesh和THREE.Scene类共同的基类THREE.Object3D非常接近,不同的是他本身没有可以渲染的数据.
+
+本例中的球体和方块假如了一个Group对象中,他们各自本身都可以移动,缩放. 也可以对整体组合进行操作.
+
+当旋转一个组的时候,他是按照整个组中心去旋转的, 在这个例子中我们在这个组的中间放了一个箭头指示中心.
+如果你选中了grouping和rotate选项，那么这个组就会开始旋转。你将会看到球体和方块一起绕着组的中心（箭头所指）旋转
+
+
+### 将多个网格合并成一个网格
+
+
+多数情况下使用组可以很容易地操纵和管理大量网格。但是当对象的数量非常多时，性能就会成为一个瓶颈。使用组，每个对象还是独立的，仍然需要对它们分别进行处理和渲染。
+
+通过BufferGeometryUtils.mergeBufferGeometries的方法可以将多个几何体合并成一个联合体.
+
+
+import { Scene as Merging } from './02-merging.jsx';
+
+<Merging />
+
+上面案例中,当方块数量达到一定数量的时候,刷新的频率就开始下降了. 当管理大量对象网格的时候,就需要用合并的方式来提高运行的效率.
+
+```jsx title='chapter-08/02-merging.jsx'
+var geometries = [];
+for (var i = 0; i < controls.numberOfObjects; i++) {
+    var cubeMesh = addCube();
+    //cubeMesh.updateMatrix();
+    cubeMesh.geometry.translate(cubeMesh.position.x,cubeMesh.position.y,cubeMesh.position.z);
+    geometries.push(cubeMesh.geometry);
+}
+
+var geometry = BufferGeometryUtils.mergeBufferGeometries(geometries,false);
+
+scene.add(new THREE.Mesh(geometry, cubeMaterial));
+```
+此方法我们为了能正确定位几何体,需要通过geometry的移动方法就几何体移动一个位置. 此方法适合一次设置使用,动态使用还是要用Mesh对象的position.
+
+你会发现这个方法有几个缺陷。
+
+由于我们得到的是一个几何体,所以你不能为每个几何体单独添加材质.
+这个问题在某种程度上可以用THREE.MeshFaceMaterial对象来解决.
+最大的缺陷是失去了对每个对象的单独控制。想要移动、旋转或缩放某个方块是不可能的.
