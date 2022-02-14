@@ -54,7 +54,7 @@ scene.add(group);
 通过BufferGeometryUtils.mergeBufferGeometries的方法可以将多个几何体合并成一个联合体.
 
 
-import { Scene as Merging } from './02-merging.jsx';
+import { Scene as Merging } from './02a-merging.jsx';
 
 <Merging />
 
@@ -80,3 +80,34 @@ scene.add(new THREE.Mesh(geometry, cubeMaterial));
 由于我们得到的是一个几何体,所以你不能为每个几何体单独添加材质.
 这个问题在某种程度上可以用THREE.MeshFaceMaterial对象来解决.
 最大的缺陷是失去了对每个对象的单独控制。想要移动、旋转或缩放某个方块是不可能的.
+
+### 多细节层次（LOD，Levels of Detail）
+
+多细节层次 —— 在显示网格时，根据摄像机距离物体的距离，来使用更多或者更少的几何体来对其进行显示。
+
+每一个级别都和一个几何体相关联，且在渲染时，可以根据给定的距离，来在这些级别对应的几何体之间进行切换。 通常情况下，你会创建多个几何体，比如说三个，一个距离很远（低细节），一个距离适中（中等细节），还有一个距离非常近（高质量）。
+
+你可以把把多层次细节模型对象LOD简单的理解为组对象Group，区别在于组对象Group属性.children中的子对象默然是全部渲染的，多层次细节模型对象LOD属性.children中的子对象Threejs系统一般要根据距离计算显示其中一个。
+
+import { Scene as LOD} from './02b-lod.jsx';
+
+<LOD />
+
+该场景构造了3个对象的按距离显示. 移动视角,可以发现远处的物体从消失,到变成方块,到最近距离变成精灵字体.
+
+```jsx title='02b-lod.jsx'
+var lod = new THREE.LOD();
+
+var cube = addCube();
+var sprite = addSprite(cube);
+
+lod.addLevel(sprite, 1); //最小设置雄小于次小
+lod.addLevel(cube, 50); // will be not visible from 100 and beyond
+lod.addLevel(new Object3D(), 100); // will be not visible from 100 and beyond
+
+lod.position.copy(cube.position);
+
+group.add(lod);
+```
+
+addLevel方法类型Group的and方法,其中增加指定了一个距离,上面代码中>100距离的物体不显示, 50到100之间的显示为方块,<50的物体显示字体.

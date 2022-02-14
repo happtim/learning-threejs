@@ -1,4 +1,3 @@
-
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
 import { InitStats} from '@site/src/components/initStats';
@@ -6,9 +5,9 @@ import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
 import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
-import { BufferGeometry } from 'three';
-import { BoxGeometry } from 'three';
-
+import SpriteText from 'three-spritetext';
+import { Object3D } from 'three/src/core/Object3D';
+import { generateUUID } from 'three/src/math/mathutils';
 
 export function Scene() {
 
@@ -18,8 +17,9 @@ export function Scene() {
 
         const div = ref.current;
         var [scene, camera, renderer] = InitScene(div);
-        var stats = InitStats('b');
-        var gui = InitGui('b');
+        var stats = InitStats('c');
+        var gui = InitGui('c');
+        var group = new THREE.Group();
 
         // call the render function
         var step = 0;
@@ -29,7 +29,7 @@ export function Scene() {
             this.cameraNear = camera.near;
             this.cameraFar = camera.far;
             this.rotationSpeed = 0.02;
-            this.combined = false;
+            this.lod = false;
 
 
             this.numberOfObjects = 500;
@@ -37,29 +37,36 @@ export function Scene() {
             this.redraw = function () {
                 var toRemove = [];
                 scene.traverse(function (e) {
-                    if (e instanceof THREE.Mesh) toRemove.push(e);
+                    if (e instanceof SpriteText) toRemove.push(e);
                 });
                 toRemove.forEach(function (e) {
                     scene.remove(e)
                 });
+                scene.remove(group);
+                group.clear();
 
                 // add a large number of cubes
-                if (controls.combined) {
-                    var geometries = [];
+                if (controls.lod) {
                     for (var i = 0; i < controls.numberOfObjects; i++) {
-                        var cubeMesh = addCube();
-                        //cubeMesh.updateMatrix();
-                        cubeMesh.geometry.translate(cubeMesh.position.x,cubeMesh.position.y,cubeMesh.position.z);
-                        geometries.push(cubeMesh.geometry);
+                        var lod = new THREE.LOD();
+
+                        var cube = addCube();
+                        var sprite = addSprite(cube);
+
+                        lod.addLevel(sprite, 1); //最小设置雄小于次小
+                        lod.addLevel(cube, 50); // will be not visible from 100 and beyond
+                        lod.addLevel(new Object3D(), 100); // will be not visible from 100 and beyond
+
+                        lod.position.copy(cube.position);
+
+                        group.add(lod);
                     }
 
-                    var geometry = BufferGeometryUtils.mergeBufferGeometries(geometries,false);
-
-                    scene.add(new THREE.Mesh(geometry, cubeMaterial));
+                    scene.add(group);
 
                 } else {
                     for (var i = 0; i < controls.numberOfObjects; i++) {
-                        scene.add(addCube());
+                        scene.add( addSprite(addCube()));
                     }
                 }
             };
@@ -70,8 +77,9 @@ export function Scene() {
         };
 
         gui.add(controls, 'numberOfObjects', 0, 20000);
-        gui.add(controls, 'combined').onChange(controls.redraw);
+        gui.add(controls, 'lod').onChange(controls.redraw);
         gui.add(controls, 'redraw');
+        gui.add(controls, 'outputObjects');
 
 
         controls.redraw();
@@ -97,11 +105,32 @@ export function Scene() {
             return cube;
         }
 
+        function addSprite(cube){
+             const sprite = new SpriteText('Cube-Text',1,0x222222);
+             sprite.position.copy(cube.position);
+             return sprite;
+        }
+
         function render() {
 
             rotation += 0.005;
 
             stats.update();
+
+            group.children.forEach(function (child) {
+                // LOD update
+                child.update(camera);
+
+                // opacity
+                //var distance = camera.position.distanceTo(child.position);
+                //var opacity = -1 / 400 * distance + 1;
+                //if (opacity < 0) {
+                //    opacity = 0;
+                //}
+                //child.getObjectForDistance(distance).material.opacity = opacity;
+
+            });
+
 
 //            scene.rotation.x+=0.02;
 
@@ -136,9 +165,9 @@ export function Scene() {
             }}
             ref={ref}
         >
-        <div id="Stats-output-b" >
+        <div id="Stats-output-c" >
         </div>
-        <div id="Gui-output-b">
+        <div id="Gui-output-c">
         </div>
         </div>
     );
