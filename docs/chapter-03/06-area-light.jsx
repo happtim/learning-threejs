@@ -6,6 +6,7 @@ import { InitGui } from '@site/src/components/InitGui';
 
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
+import { Vector3 } from 'three/src/math/Vector3';
 
 export function Scene() {
 
@@ -17,6 +18,11 @@ export function Scene() {
         var [scene, camera, renderer] = InitScene(div);
         var stats = InitStats();
         var gui = InitGui();
+
+        //camera.position.set( 0, 25, - 15 );
+        //camera.lookAt(-5,-5,35);
+
+        renderer.outputEncoding = THREE.sRGBEncoding;
 
         RectAreaLightUniformsLib.init();
 
@@ -47,46 +53,37 @@ export function Scene() {
 
         var areaLight1 = new THREE.RectAreaLight(0xff0000, 3);
         areaLight1.position.set(-5, 5, -35);
-        areaLight1.rotation.set(-Math.PI / 2, 0, 0);
+        areaLight1.rotation.set(-Math.PI , 0, 0);
         areaLight1.width = 4;
         areaLight1.height = 9.9;
         scene.add(areaLight1);
 
         var areaLight2 = new THREE.RectAreaLight(0x00ff00, 3);
         areaLight2.position.set(0, 5, -35);
-        areaLight2.rotation.set(-Math.PI / 2, 0, 0);
+        areaLight2.rotation.set(-Math.PI , 0, 0);
         areaLight2.width = 4;
         areaLight2.height = 9.9;
         scene.add(areaLight2);
 
         var areaLight3 = new THREE.RectAreaLight(0x0000ff, 3);
         areaLight3.position.set(5, 5, -35);
-        areaLight3.rotation.set(-Math.PI / 2, 0, 0);
+        areaLight3.rotation.set(-Math.PI , 0, 0);
         areaLight3.width = 4;
         areaLight3.height = 9.9;
         scene.add(areaLight3);
 
-        var planeGeometry1 = new THREE.BoxGeometry(4, 10, 0);
-        var planeGeometry1Mat = new THREE.MeshBasicMaterial({color: 0xff0000});
-        var plane1 = new THREE.Mesh(planeGeometry1, planeGeometry1Mat);
-        plane1.position.copy(areaLight1.position);
-        scene.add(plane1);
+        var areaLightHelper1 = new RectAreaLightHelper( areaLight1 );
+        areaLightHelper1.rotation.set(-Math.PI /2 , 0  ,0);
 
+        var areaLightHelper2 = new RectAreaLightHelper( areaLight2 );
+        areaLightHelper2.rotation.set(-Math.PI /2 , 0  ,0);
 
-        var planeGeometry2 = new THREE.BoxGeometry(4, 10, 0);
-        var planeGeometry2Mat = new THREE.MeshBasicMaterial({color: 0x00ff00});
-        var plane2 = new THREE.Mesh(planeGeometry2, planeGeometry2Mat);
+        var areaLightHelper3 = new RectAreaLightHelper( areaLight3 );
+        areaLightHelper3.rotation.set(-Math.PI /2 , 0  ,0);
 
-        plane2.position.copy(areaLight2.position);
-        scene.add(plane2);
-
-        var planeGeometry3 = new THREE.BoxGeometry(4, 10, 0);
-        var planeGeometry3Mat = new THREE.MeshBasicMaterial({color: 0x0000ff});
-        var plane3 = new THREE.Mesh(planeGeometry3, planeGeometry3Mat);
-
-        plane3.position.copy(areaLight3.position);
-        scene.add(plane3);
-
+        scene.add( areaLightHelper1 );
+        scene.add( areaLightHelper2 );
+        scene.add( areaLightHelper3 );
 
         var controls = new function () {
             this.rotationSpeed = 0.02;
@@ -100,11 +97,6 @@ export function Scene() {
 
         gui.addColor(controls, 'color1').onChange(function (e) {
             areaLight1.color = new THREE.Color(e);
-            planeGeometry1Mat.color = new THREE.Color(e);
-            scene.remove(plane1);
-            plane1 = new THREE.Mesh(planeGeometry1, planeGeometry1Mat);
-            plane1.position.copy(areaLight1.position);
-            scene.add(plane1);
 
         });
         gui.add(controls, 'intensity1', 0, 5).onChange(function (e) {
@@ -112,22 +104,12 @@ export function Scene() {
         });
         gui.addColor(controls, 'color2').onChange(function (e) {
             areaLight2.color = new THREE.Color(e);
-            planeGeometry2Mat.color = new THREE.Color(e);
-            scene.remove(plane2);
-            plane2 = new THREE.Mesh(planeGeometry2, planeGeometry2Mat);
-            plane2.position.copy(areaLight2.position);
-            scene.add(plane2);
         });
         gui.add(controls, 'intensity2', 0, 5).onChange(function (e) {
             areaLight2.intensity = e;
         });
         gui.addColor(controls, 'color3').onChange(function (e) {
             areaLight3.color = new THREE.Color(e);
-            planeGeometry3Mat.color = new THREE.Color(e);
-            scene.remove(plane3);
-            plane3 = new THREE.Mesh(planeGeometry1, planeGeometry3Mat);
-            plane3.position.copy(areaLight3.position);
-            scene.add(plane3);
         });
         gui.add(controls, 'intensity3', 0, 5).onChange(function (e) {
             areaLight3.intensity = e;
