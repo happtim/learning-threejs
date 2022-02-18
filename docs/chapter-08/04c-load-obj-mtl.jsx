@@ -8,14 +8,10 @@ import { InitGui } from '@site/src/components/InitGui';
 
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export function Scene() {
 
     const ref = useRef(null);
-
-    const ButterflyOBJUrl = useBaseUrl('/assets/models/butterfly.obj');
-    const ButterflyMTLUrl = useBaseUrl('/assets/models/butterfly.mtl');
 
     useEffect(()=>{
 
@@ -49,13 +45,13 @@ export function Scene() {
         var mesh;
 
         new MTLLoader()
-            .load(ButterflyMTLUrl , function (materials ) {
+            .load('/assets/models/butterfly.mtl' , function (materials ) {
 
             console.log(materials);
 
             new OBJLoader()
                 .setMaterials(materials)
-                .load(ButterflyOBJUrl,function(object){
+                .load('/assets/models/butterfly.obj',function(object){
 
                     console.log(object);
                     // configure the wings

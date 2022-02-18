@@ -6,13 +6,10 @@ import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export function Scene() {
 
     const ref = useRef(null);
-
-    const TruckUrl = useBaseUrl('/assets/models/dae/Truck_dae.dae');
 
     useEffect(()=>{
 
@@ -36,7 +33,7 @@ export function Scene() {
         var loader = new ColladaLoader();
 
         var mesh;
-        loader.load(TruckUrl, function (result) {
+        loader.load('/assets/models/dae/Truck_dae.dae', function (result) {
             mesh = result.scene.children[0].children[0].clone();
             mesh.scale.set(4, 4, 4);
             scene.add(mesh);

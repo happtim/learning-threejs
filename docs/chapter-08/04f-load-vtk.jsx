@@ -6,13 +6,10 @@ import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
 import { VTKLoader } from 'three/examples/jsm/loaders/VTKLoader';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export function Scene() {
 
     const ref = useRef(null);
-
-    const VtkUrl = useBaseUrl('/assets/models/moai_fixed.vtk');
 
     useEffect(()=>{
 
@@ -41,7 +38,7 @@ export function Scene() {
         var group;
         var loader = new VTKLoader();
         var group = new THREE.Object3D();
-        loader.load(VtkUrl, function (geometry) {
+        loader.load('/assets/models/moai_fixed.vtk', function (geometry) {
             var mat = new THREE.MeshLambertMaterial({color: 0xaaffaa});
             group = new THREE.Mesh(geometry, mat);
             group.scale.set(9, 9, 9);

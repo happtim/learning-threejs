@@ -1,6 +1,4 @@
 
-
-
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
 import { InitStats} from '@site/src/components/initStats';
@@ -8,13 +6,10 @@ import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
 import { STLLoader } from 'three/examples/jsm/loaders/STLLoader';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export function Scene() {
 
     const ref = useRef(null);
-
-    const StlUrl = useBaseUrl('/assets/models/SolidHead_2_lowPoly_42k.stl');
 
     useEffect(()=>{
 
@@ -48,7 +43,7 @@ export function Scene() {
         // model from http://www.thingiverse.com/thing:69709
         var loader = new STLLoader();
         var group = new THREE.Object3D();
-        loader.load(StlUrl, function (geometry) {
+        loader.load('/assets/models/SolidHead_2_lowPoly_42k.stl', function (geometry) {
             console.log(geometry);
             var mat = new THREE.MeshLambertMaterial({color: 0x7777ff});
             group = new THREE.Mesh(geometry, mat);

@@ -7,14 +7,9 @@ import { InitGui } from '@site/src/components/InitGui';
 
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
 
-import useBaseUrl from '@docusaurus/useBaseUrl';
-
-
 export function Scene() {
 
     const ref = useRef(null);
-
-    const PineconeUrl = useBaseUrl('/assets/models/pinecone.obj');
 
     useEffect(()=>{
 
@@ -46,7 +41,7 @@ export function Scene() {
         var mesh;
 
         var loader = new OBJLoader();
-        loader.load(PineconeUrl , function (loadedMesh) {
+        loader.load('/assets/models/pinecone.obj' , function (loadedMesh) {
             var material = new THREE.MeshLambertMaterial({color: 0x5C3A21});
             // loadedMesh is a group of meshes. For
             // each mesh set the material, and compute the information

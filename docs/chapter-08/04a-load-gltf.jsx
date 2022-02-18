@@ -6,13 +6,10 @@ import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import useBaseUrl from '@docusaurus/useBaseUrl';
 
 export function Scene() {
 
     const ref = useRef(null);
-
-    const ChairUrl = useBaseUrl('/assets/models/misc_chair01.gltf');
 
     useEffect(()=>{
 
@@ -44,7 +41,7 @@ export function Scene() {
         var mesh;
 
         var loader = new GLTFLoader();
-        loader.load(ChairUrl, function (gltf) {
+        loader.load('/assets/models/misc_chair01.gltf', function (gltf) {
 
             console.log(gltf);
             scene.add(gltf.scene);
