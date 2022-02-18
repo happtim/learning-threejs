@@ -1,4 +1,5 @@
 ---
+    slug: 'gltf-json'
     title: 'glTF结构'
 ---
 
@@ -29,7 +30,7 @@ glTF格式本质上是一个JSON文件。这一文件描述了整个3D场景的�
 ```
 下图给出了glTF格式的JSON部分的顶级元素概览：
 
-![glTF json](./assets/2022-02-18/gltfJsonStructure.png)
+![glTF json](./gltfJsonStructure.png)
 
 这里我们对这些元素进行简要说明，读者如果想要更加深入地了解它们，可以通过链接获取glTF规范对它们地详细说明。这些元素之间地关系将会在之后的章节进行说明。
 
@@ -48,7 +49,7 @@ glTF格式本质上是一个JSON文件。这一文件描述了整个3D场景的�
 
 二进制数据，比如3D对象的几何数据和纹理数据通常不被包含在JSON文件中，它们被存储在外部的文件中。JSON文件中只包含了到这些外部文件的链接。这使得二进制数据可以以非常紧凑的形式进行存储方便互联网传输，并且可以直接被渲染程序使用，无需额外的解码、预处理。
 
-![image](./assets/2022-02-18/gltfStructure.png)
+![image](./gltfStructure.png)
 
 如上图所示，有两种类型的对象buffers和images可以包含外部文件链接。我们会在之后的章节对它们进行详细说明。
 
