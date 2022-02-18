@@ -1,0 +1,152 @@
+---
+    title: '加载三维模型'
+---
+
+目前，3D模型的格式有成千上万种可供选择，但每一种格式都具有不同的目的、用途以及复杂性。 
+虽然 three.js已经提供了多种导入工具, 在目录three/examples/jsm/loaders， 但是选择正确的文件格式以及工作流程将可以节省很多时间，以及避免遭受很多挫折。
+某些格式难以使用，或者实时体验效率低下，或者目前尚未得到完全支持。
+
+
+## glTF格式
+
+gltf格式的具体结构 [gltf-json]('/blog/2022-02-18-gltf-json.md')
+
+import { Scene } from './04a-load-gltf.jsx'
+
+<Scene />
+
+<br/>
+
+```jsx title='chapter-08/04a-load-gltf.jsx'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
+...
+var loader = new GLTFLoader();
+loader.load(ChairUrl, function (gltf) {
+
+    console.log(gltf);
+    scene.add(gltf.scene);
+});
+```
+
+
+## OBJ格式
+
+OBJ和MTL是相互配合的两种格式，经常一起使用。OBJ文件定义几何体，而MTL文件定义所用的材质。OBJ和MTL都是基于文本的格式。
+
+import { Scene as SceneB } from './04b-load-obj.jsx'
+
+<SceneB />
+
+<br/>
+
+使用OBJLoader首先要引用它.
+
+```jsx title='chapter-08/04b-load-obj.jsx'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader'
+...
+
+var loader = new OBJLoader();
+loader.load(PineconeUrl , function (loadedMesh) {
+    var material = new THREE.MeshLambertMaterial({color: 0x5C3A21});
+    // loadedMesh is a group of meshes. For
+    // each mesh set the material, and compute the information
+    // three.js needs for rendering.
+    loadedMesh.children.forEach(function (child) {
+        child.material = material;
+    });
+
+    mesh = loadedMesh;
+    loadedMesh.scale.set(100, 100, 100);
+    loadedMesh.rotation.x = -0.3;
+    scene.add(loadedMesh);
+});
+```
+
+## MTL格式
+
+import { Scene as SceneC } from './04c-load-obj-mtl.jsx'
+
+<SceneC />
+
+<br/>
+
+首先加载正确的加载器.
+
+```jsx title='chapter-08/04c-load-obj-mtl.jsx'
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader';
+import { MTLLoader } from 'three/examples/jsm/loaders/MTLLoader';
+...
+new MTLLoader()
+    .load(ButterflyMTLUrl , function (materials ) {
+
+    console.log(materials);
+
+    new OBJLoader()
+        .setMaterials(materials)
+        .load(ButterflyOBJUrl,function(object){
+
+            console.log(object);
+            // configure the wings
+            var wing2 = object.children[5];
+            var wing1 = object.children[4];
+
+            wing1.material.opacity = 0.6;
+            wing1.material.transparent = true;
+            wing1.material.depthTest = false;
+            wing1.material.side = THREE.DoubleSide;
+
+            wing2.material.opacity = 0.6;
+            wing2.material.transparent = true;
+            wing2.material.depthTest = false;
+            wing2.material.side = THREE.DoubleSide;
+
+            object.scale.set(140, 140, 140);
+            mesh = object;
+            scene.add(mesh);
+
+            object.rotation.x = 0.2;
+            object.rotation.y = -1.3;
+    });
+});
+```
+
+加载MTL文件及所需要的纹理文件中,必须看下MTL文件如何引用纹理的.在MTL文件中应该使用相对路径引用纹理文件.
+我们首先需要用MTLLoader加载MTL材质文件，并通过setMaterials函数将加载的材质对象指定给OBJLoader对象，然后再使用OBJLoader加载模型文件。
+
+## 加载Collada模型
+
+Collada模型（文件扩展名为.dae）是另外一种非常通用的、用来定义场景和模型的文件格式。Collada模型中不仅定义了几何体，也定义了材质，甚至还可以定义光源。
+
+import { Scene as SceneD } from './04d-load-collada.jsx'
+
+<SceneD />
+
+<br/>
+
+
+```jsx title='chapter-08/04d-load-collada.jsx'
+import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
+...
+var loader = new ColladaLoader();
+
+var mesh;
+loader.load(TruckUrl, function (result) {
+    mesh = result.scene.children[0].children[0].clone();
+    mesh.scale.set(4, 4, 4);
+    scene.add(mesh);
+});
+```
+## 从其他格式的文件中加载模型
+
+可以从其他的文件格式中,加载3d模型.使用相同的方法步骤.
+
+1. 在网页中包含[格式名称]Loader.js文件。
+2. 使用[格式名称]Loader.load()函数从URL中加载。
+3. 检查一下传递给回调函数的返回结果，并对它进行渲染。
+
+
+import { Scene as SceneE } from './04f-load-vtk.jsx'
+
+<SceneE />
+
+<br/>

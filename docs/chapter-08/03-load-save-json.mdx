@@ -1,0 +1,136 @@
+---
+    title: '从外部资源加载几何体'
+---
+
+Three.js可以读取几种三维文件格式,并从中导入几何体和网格.
+
+
+## 以Three.js的Json格式保存和加载
+
+可在两种情况使用Three.js的JSON文件. 用它保存加载单独THREE.Mesh,或者保存加载整个场景.
+
+## 保存加载THREE.Mesh(ObjectLoader)
+
+本例中我们创建了一个环状扭结,使用Save和Load命令可以保存当前的几何体,我们存储的位置使用浏览器的本地存储API.
+通过这个API我们可以将改几何体持久化在浏览器客户端里,也可以将其读取出来Load按钮功能.
+
+import { Scene } from './03a-load-save-json-object.jsx'
+
+<Scene/>
+
+<br/>
+
+geometry 导出Json不需要额外的库,只需要一个方法即可.
+
+```jsx title='chapter-08/03-load-save-json-object.jsx'
+var result = knot.toJSON();
+localStorage.setItem("json", JSON.stringify(result));
+```
+
+下面格式就是Json的存储格式
+
+```json
+
+{
+  "metadata": {
+    "version": 4.5,
+    "type": "Object",
+    "generator": "Object3D.toJSON"
+  },
+  "geometries": [
+    {
+      "uuid": "2D11D48D-F5D7-49A2-B8F2-C9EA6A373A60",
+      "type": "TorusKnotGeometry",
+      "radius": 12.12,
+      "tube": 3.24,
+      "tubularSegments": 64,
+      "radialSegments": 8,
+      "p": 2,
+      "q": 3
+    }
+  ],
+  "materials": [
+    {
+      "uuid": "34D2AF8F-3DD0-479B-8908-727F1D9A78DE",
+      "type": "MeshBasicMaterial",
+      "color": 11184810,
+      "reflectivity": 1,
+      "refractionRatio": 0.98,
+      "side": 2,
+      "vertexColors": true,
+      "depthFunc": 3,
+      "depthTest": true,
+      "depthWrite": true,
+      "colorWrite": true,
+      "stencilWrite": false,
+      "stencilWriteMask": 255,
+      "stencilFunc": 519,
+      "stencilRef": 0,
+      "stencilFuncMask": 255,
+      "stencilFail": 7680,
+      "stencilZFail": 7680,
+      "stencilZPass": 7680,
+      "wireframe": true,
+      "wireframeLinewidth": 2
+    }
+  ],
+  "object": {
+    "uuid": "D9EE67ED-3FC4-4F19-801B-E3CABF70C28A",
+    "type": "Mesh",
+    "layers": 1,
+    "matrix": [
+      0.6194603572488704,
+      0,
+      0.7850279395009466,
+      0,
+      0,
+      1,
+      0,
+      0,
+      -0.7850279395009466,
+      0,
+      0.6194603572488704,
+      0,
+      0,
+      0,
+      0,
+      1
+    ],
+    "geometry": "2D11D48D-F5D7-49A2-B8F2-C9EA6A373A60",
+    "material": "34D2AF8F-3DD0-479B-8908-727F1D9A78DE"
+  }
+}
+
+```
+
+将几何体再加载回来也很简单 
+
+```jsx title='chapter-08/03-load-save-json-object.jsx'
+var loadedGeometry = JSON.parse(json);
+var loader = new THREE.ObjectLoader();
+
+loadedMesh = loader.parse(loadedGeometry);
+loadedMesh.position.x -= 50;
+scene.add(loadedMesh);
+```
+
+先将Json文本反序列化为对象,然后再将Json对象转化为Mesh对象. Three.js提供了一个THREE.ObjectLoader的辅助对象帮助我们还原对象.
+该对象其实还提供一个load方式,可以直接将Json文件Url地址传入.可以直接解析成THREE.Mesh对象.
+
+
+## 保存加载场景
+
+场景的保存可以和之前案例一样使用 ObjectLoader去加载Json
+
+import { Scene as SceneB } from './03b-load-save-json-scene.jsx'
+
+<SceneB />
+
+<br/>
+
+
+##  使用Blender
+
+Blender 导出 Three.js JSON 格式已经被移除了. 后续都是使用glTF为推荐格式.
+
+
