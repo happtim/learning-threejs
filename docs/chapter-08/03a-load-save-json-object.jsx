@@ -15,7 +15,6 @@ export function Scene() {
         var [scene, camera, renderer] = InitScene(div);
         var stats = InitStats();
         var gui = InitGui();
-        console.log(gui);
 
         var knot = createMesh(new THREE.TorusKnotGeometry(10, 1, 64, 8, 2, 3, 1));
         // add the sphere to the scene

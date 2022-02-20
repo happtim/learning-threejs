@@ -4,10 +4,8 @@ import { InitStats} from '@site/src/components/initStats';
 import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
-import * as BufferGeometryUtils from 'three/examples/jsm/utils/BufferGeometryUtils'
 import SpriteText from 'three-spritetext';
 import { Object3D } from 'three/src/core/Object3D';
-import { generateUUID } from 'three/src/math/mathutils';
 
 export function Scene() {
 

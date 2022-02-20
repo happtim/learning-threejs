@@ -4,8 +4,6 @@ import { InitStats} from '@site/src/components/initStats';
 import { InitScene} from '@site/src/components/InitScene';
 import { InitGui } from '@site/src/components/InitGui';
 
-import { OBJExporter } from 'three/examples/jsm/exporters/OBJExporter'
-
 export function Scene() {
 
     const ref = useRef(null);
