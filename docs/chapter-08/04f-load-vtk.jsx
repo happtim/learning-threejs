@@ -1,9 +1,9 @@
 
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
-import { InitStats} from '@site/src/components/initStats';
-import { InitScene} from '@site/src/components/InitScene';
-import { InitGui } from '@site/src/components/InitGui';
+import { InitStats} from '/src/components/initStats';
+import { InitScene} from '/src/components/InitScene';
+import { InitGui } from '/src/components/InitGui';
 
 import { VTKLoader } from 'three/examples/jsm/loaders/VTKLoader';
 
