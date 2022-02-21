@@ -6,7 +6,6 @@ import { InitGui } from '@site/src/components/InitGui';
 
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';
-import { Vector3 } from 'three/src/math/Vector3';
 
 export function Scene() {
 
@@ -18,9 +17,6 @@ export function Scene() {
         var [scene, camera, renderer] = InitScene(div);
         var stats = InitStats();
         var gui = InitGui();
-
-        //camera.position.set( 0, 25, - 15 );
-        //camera.lookAt(-5,-5,35);
 
         renderer.outputEncoding = THREE.sRGBEncoding;
 

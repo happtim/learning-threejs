@@ -1,10 +1,10 @@
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
-import { InitStats} from '@site/src/components/initStats';
-import { InitScene} from '@site/src/components/InitScene';
-import { InitGui } from '@site/src/components/InitGui';
+import { InitStats} from '/src/components/initStats';
+import { InitScene} from '/src/components/InitScene';
+import { InitGui } from '/src/components/InitGui';
 
-import  GrassImageUrl  from '@site/static/img/chapter-03/grasslight-big.jpg';
+import  GrassImageUrl  from '@site/static/assets/textures/ground/grasslight-big.jpg';
 
 export function Scene() {
 
@@ -18,8 +18,6 @@ export function Scene() {
         var gui = InitGui();
 
         scene.fog = new THREE.Fog(0xaaaaaa, 0.010, 200);
-
-        console.log(GrassImageUrl);
 
         // create the ground plane
         var texture  = new THREE.TextureLoader().load(GrassImageUrl);
