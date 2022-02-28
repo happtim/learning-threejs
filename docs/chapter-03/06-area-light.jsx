@@ -1,8 +1,8 @@
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
 import { InitStats} from '/src/components/initStats';
-import { InitScene} from '/src/components/InitScene';
-import { InitGui } from '/src/components/InitGui';
+import { InitScene} from '/src/components/initScene';
+import { InitGui } from '/src/components/initGui';
 
 import { RectAreaLightUniformsLib } from 'three/examples/jsm/lights/RectAreaLightUniformsLib.js';
 import { RectAreaLightHelper } from 'three/examples/jsm/helpers/RectAreaLightHelper.js';

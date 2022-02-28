@@ -2,8 +2,8 @@
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
 import { InitStats} from '/src/components/initStats';
-import { InitScene} from '/src/components/InitScene';
-import { InitGui } from '/src/components/InitGui';
+import { InitScene} from '/src/components/initScene';
+import { InitGui } from '/src/components/initGui';
 
 import { ColladaLoader } from 'three/examples/jsm/loaders/ColladaLoader';
 
