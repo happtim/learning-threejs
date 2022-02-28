@@ -1,7 +1,7 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import { InitStats} from '../components/initStats';
-import { InitGui } from '../components/InitGui';
+import  InitStats from '../components/initStats';
+import  InitGui  from '../components/InitGui';
 
 
 export function Scene() {

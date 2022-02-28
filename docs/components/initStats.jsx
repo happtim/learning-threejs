@@ -1,8 +1,8 @@
 import  Stats  from 'three/examples/jsm/libs/stats.module'
 
-export function InitStats(index='') {
+export default function InitStats(index='') {
 
-    var stats = new Stats();
+    let stats = new Stats();
 
     stats.setMode(0); // 0: fps, 1: ms
 

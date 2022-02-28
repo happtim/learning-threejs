@@ -1,8 +1,8 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import { InitStats} from '../components/initStats';
-import { InitScene} from '../components/InitScene';
-import { InitGui } from '../components/InitGui';
+import InitGui from '../components/InitGui';
+import  InitStats from '../components/initStats';
+import  InitScene from '../components/InitScene';
 
 
 export function Scene() {
@@ -12,6 +12,10 @@ export function Scene() {
     useEffect(()=>{
 
         const div = ref.current;
+
+        console.log(InitStats);
+        console.log(InitGui);
+        console.log(InitScene);
 
         var [scene, camera, renderer] = InitScene(div);
         var stats = InitStats();
