@@ -1,12 +1,89 @@
 ---
-    title: '标准网格材质'
+    title: '简单的网格材质'
 ---
 
-## 
+## THREE.MeshBasicMaterial
+
+MeshBasicMaterial是一种非常简单的材质，这种材质不考虑场景中光照的影响。使用这种材质的网格会被渲染成简单的平面多边形，而且也可以显示几何体的线框。
 
 import { Scene } from './01-basic-mesh-material.jsx';
 
-<Scene/>
+<Scene />
 
 <br/>
+
+|名称|描述|
+|---|---|
+|color|设置材质的颜色|
+|wireframe|是否显示线框。显示线框对于调试有帮助|
+|Wireframelinewidth|线框的线条宽度|
+|wireframeLinecap|这个属性定义了线框模式下顶点间线段的端点如何显示.WebGLRenderer对象不支持改属性|
+|wireframeLinejoin|这个属性定义了线段连接点如何显示.WebGLRenderer对象不支持改属性|
+
+创建一个网格标准材质很简单,我们可以使用右上角的菜单来控制渲染效果.
+
+```jsx title='chapter-04/01-basic-mesh-material.jsx'
+var meshMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
+```
+
+在这个例子中有一个side属性.在plane网格可以看到到起作用,材质通常应用在物体前面的面上,所有在平面旋转的时候有一半时间是看不见他的.如果将side设置double,那么几何体两面都有材质.
+但是渲染器也会付出更大的工作.
+
+## THREE.MeshDepthMaterial
+
+使用这种材质的物体，其外观不是由光照或某个材质属性决定的，而是由物体到摄像机的距离决定的。
+可以将这种材质与其他材质结合使用，从而很容易地创建出逐渐消失的效果。
+
+距离是基于相机的near和far值,距离near越近颜色越白,离相机的far约近约黑. 同时如果对象不在near和far之前的平面内,不会被渲染出来.
+
+import { Scene as SceneB } from './02-depth-material.jsx';
+
+<SceneB />
+
+<br/>
+
+near 和 far之间的大小决定了场景中物体的亮度和消失速度,如果之间的差值比较大,那么物体消失也会慢点.如果之间的差值比较小,物体的消失比较明显.
+
+创建 MeshDepthMaterial 非常简单, 但是要记住,在render的时候要更新相机.
+
+```jsx title='chapter-04/02-depth-material.jsx'
+scene.overrideMaterial = new THREE.MeshDepthMaterial();
+...
+function render() {
+    ...
+    camera.updateProjectionMatrix();
+    // render using requestAnimationFrame
+    requestAnimationFrame(render);
+    renderer.render(scene, camera);
+}
+```
+
+## 联合材质
+
+THREE.MeshDepthMaterial 是没有颜色的属性的,如果要加给MeshDepthMaterial添加颜色,就要使用MeshBasicMaterial添加颜色,并且将两个材质合并在一起.
+
+import { Scene as SceneC } from './03-combined-material.jsx';
+
+<SceneC />
+
+<br/>
+
+```jsx title='chapter-04/03-combined-material.jsx'
+import * as SceneUtils  from "three/examples/jsm/utils/SceneUtils";
+...
+var cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
+
+var cubeMaterial = new THREE.MeshDepthMaterial();
+var colorMaterial = new THREE.MeshBasicMaterial({
+    color: controls.color,
+    //transparent: true,
+    blending: THREE.MultiplyBlending
+});
+var cube = SceneUtils.createMultiMaterialObject(cubeGeometry, [colorMaterial, cubeMaterial]);
+//cube.children[1].scale.set(0.99, 0.99, 0.99);
+```
+首先创建了两种材质,对于 MeshDepthMaterial 没有什么做的, 对于 MeshBasicMaterial 我们设置了颜色和融合模式,
+设置了融合属性之后就会和背景相互作用,这里的背景就是 MeshDepthMaterial. 使用 MultiplyBlending 对象,这种模式会把前景色和背景色.
+
+最后调用THREE.SceneUtils.createMultiMaterialObject()方法创建一个网格的时候，几何体会被复制，返回一个网格组，里面的两个网格完全相同。
 

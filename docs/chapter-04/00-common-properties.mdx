@@ -7,6 +7,7 @@
 ## 公共属性
 
 |属性|说明|
+|---|---|
 |id|当你创建一个材质的时候自动分配，作为材质实例的标识，从0开始自动计数|
 |uuid|全局唯一标识，内部使用|
 |name|给材质分配一个名称，调试用|
@@ -20,6 +21,7 @@
 ## 混合（Blending）属性
 
 |属性|说明|
+|---|---|
 |blending|决定材质如何与背景混合，默认值THREE.NormalBlending，表示仅仅显示顶层颜色|
 |blendsrc|定义物体（源）如何混合到背景（目标）中，默认THREE.SrcAlphaFactor表示基于物体的Alpha通道进行混合|
 |blenddst|定义在混合时，背景（目标）如何渲染，默认THREE.OneMinusSrcAlphaFactor表示基于物体的Alpha通道进行混合|
@@ -28,9 +30,10 @@
 ## 高级属性
 
 |属性|说明|
+|---|---|
 |depthTest|这是一个高级WebGL属性,使用则会个|
 |depthWrite||
 |depthFunc||
-|ploygonOffset,polygonOffsetfactor,polygonOffsetUnits|通过这些属性,可以控制WebGL的POLYGON_OFFSET_FILL特性,一般不需要要使用它们.有关这些属性具体做什么解释|
+|ploygonOffset,polygonOffsetfactor,polygonOffsetUnits||
 |alphatest|可以给这个属性指定一个值(从0到1).如果某个像素的alpha值小于值,那么该像素不会显示出来.可以使用这个属性移除一些与透明度相关的毛边|
 |precision|设置当前材质的计算精度,可使用WebGL参数值:highp,mediump,lowp|
