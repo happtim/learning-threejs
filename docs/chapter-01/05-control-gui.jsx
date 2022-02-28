@@ -2,7 +2,7 @@ import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
 import  {InitGui} from '/src/components/initGui';
 import  {InitStats} from '/src/components/initStats';
-import  {InitScene} from '/src/components/InitScene';
+import  {InitScene} from '/src/components/initScene';
 
 
 export function Scene() {
