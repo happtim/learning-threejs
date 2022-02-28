@@ -4,8 +4,8 @@ import React , { useRef, useEffect }from 'react';
 import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry'
 import { ParametricGeometries } from 'three/examples/jsm/geometries/ParametricGeometries.js'
 
-import { InitStats} from '../components/initStats';
-import { InitScene} from '../components/InitScene';
+import { InitStats} from '/src/components/initStats';
+import { InitScene} from '/src/components/initScene';
 
 import * as  SceneUtils from 'three/examples/jsm/utils/SceneUtils';
 

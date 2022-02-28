@@ -1,6 +1,6 @@
 import React , { useRef, useEffect }from 'react';
 import * as THREE from 'three';
-import  InitStats  from '../components/initStats';
+import  {InitStats}  from '/src/components/initStats';
 
 export function Scene() {
 
