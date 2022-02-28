@@ -2,9 +2,9 @@ import * as THREE from "three";
 import { Geometry,Face3 } from 'three/examples/jsm/deprecated/Geometry'
 
 import React , { useRef, useEffect }from 'react';
-import { InitStats} from '@site/src/components/initStats';
-import { InitScene} from '@site/src/components/InitScene';
-import { InitGui } from '@site/src/components/InitGui';
+import { InitStats} from '../components/initStats';
+import { InitScene} from '../components/InitScene';
+import { InitGui } from '../components/InitGui';
 
 import * as  SceneUtils from 'three/examples/jsm/utils/SceneUtils';
 
