@@ -87,3 +87,13 @@ var cube = SceneUtils.createMultiMaterialObject(cubeGeometry, [colorMaterial, cu
 
 最后调用THREE.SceneUtils.createMultiMaterialObject()方法创建一个网格的时候，几何体会被复制，返回一个网格组，里面的两个网格完全相同。
 
+
+## THREE.MeshNormalMaterial
+
+这个材质的每个网格面渲染的颜色都稍微有所不同, 而且在物体旋转的时候,这些颜色也基本保持在原来的位置上.
+
+import { Scene as SceneD } from './04-mesh-normal-material.jsx';
+
+<SceneD />
+
+<br/>
