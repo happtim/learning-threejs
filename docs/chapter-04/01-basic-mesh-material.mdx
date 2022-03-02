@@ -91,6 +91,10 @@ var cube = SceneUtils.createMultiMaterialObject(cubeGeometry, [colorMaterial, cu
 ## THREE.MeshNormalMaterial
 
 这个材质的每个网格面渲染的颜色都稍微有所不同, 而且在物体旋转的时候,这些颜色也基本保持在原来的位置上.
+之所以会这样，是因为每一面的颜色是由从该面向外指的法向量计算得到的。所谓法向量是指与面垂直的向量。
+
+可以将旋转的对象选择为球体(sphere),并且将flatshading属性设置成true. 查看效果比比较明显.
+球体上每个三角面上面的箭头就是这个面的法向量.由于球体每个三角面的法向量都不同所以我们得到了一个色彩斑斓的球体.
 
 import { Scene as SceneD } from './04-mesh-normal-material.jsx';
 
@@ -98,11 +102,87 @@ import { Scene as SceneD } from './04-mesh-normal-material.jsx';
 
 <br/>
 
+创建一个MeshNormalMaterial很简单, 其中它有个shading属性,我们可以通过它告诉Three.js如何渲染物体,常见的wireframe和wireframeLinewidth我们前面已经介绍了.
+如果使用THREE.FlatShading，那么每个面是什么颜色就渲染成什么颜色，或者也可以使用THREE.SmoothShading，这样就可以使物体的表面变得更光滑。
+
+```jsx 
+var meshMaterial = new THREE.MeshNormalMaterial();
+```
+
+下面代码展示了如何添加每个三角面的法向量.我们从bufferGeometry中的index序列中获取每个三角面顶点的序号.
+再从position属性中按照序号将Vertex3顶点获取到. 然后创建一个THREE.Triangle来代表一个三角面.
+
+```jsx title='chapter-04/04mesh-normal-material.jsx'
+let position = sphere.geometry.getAttribute('position');
+let index = sphere.geometry.index;
+
+let tri = new THREE.Triangle(); // for re-use
+let a = new THREE.Vector3(), 
+    b = new THREE.Vector3(), 
+    c = new THREE.Vector3(); // for re-use
+
+
+for( let f = 0; f < index.count / 3; f++ ){
+    let idxBase = f * 3;
+    a.fromBufferAttribute( position, index.getX( idxBase + 0 ) );
+    b.fromBufferAttribute( position, index.getX( idxBase + 1 ) );
+    c.fromBufferAttribute( position, index.getX( idxBase + 2 ) );
+    tri.set( a, b, c );
+
+    let dir = new THREE.Vector3();
+    let origin = new THREE.Vector3();
+
+    tri.getNormal(dir);
+    tri.getMidpoint(origin);
+
+    var arrow = new THREE.ArrowHelper(
+            dir,
+            origin,
+            2,
+            0x3333FF,
+            0.5,
+            0.5);
+
+    sphere.add(arrow);
+
+}
+```
+
 
 ## 在简单几何体上使用多种材质
+
+该案例是一个魔方的,3*3 共9个小立方体组成.
 
 import { Scene as SceneE } from './05-mesh-face-material.jsx';
 
 <SceneE />
 
 <br/>
+
+我们先创建了一个THREE.Mesh对象,他将保存所有方块.接下来为每个面创建一个材质,并把它们保存在mats数组里面.
+记住小方块的位置是基于group的位置,如果group发生了移动或者旋转,所有的小方块都会执行相同的动作.
+
+
+```jsx title='05-mesh-face-material.jsx'
+var group = new THREE.Mesh();
+// add all the rubik cube elements
+var mats = [];
+mats.push(new THREE.MeshBasicMaterial({color: 0x009e60}));
+mats.push(new THREE.MeshBasicMaterial({color: 0x0051ba}));
+mats.push(new THREE.MeshBasicMaterial({color: 0xffd500}));
+mats.push(new THREE.MeshBasicMaterial({color: 0xff5800}));
+mats.push(new THREE.MeshBasicMaterial({color: 0xC41E3A}));
+mats.push(new THREE.MeshBasicMaterial({color: 0xffffff}));
+
+for (var x = 0; x < 3; x++) {
+    for (var y = 0; y < 3; y++) {
+        for (var z = 0; z < 3; z++) {
+            var cubeGeom = new THREE.BoxGeometry(2.9, 2.9, 2.9);
+            var cube = new THREE.Mesh(cubeGeom, mats);
+            cube.position.set(x * 3 - 3, y * 3, z * 3 - 3);
+
+            group.add(cube);
+        }
+    }
+}
+```

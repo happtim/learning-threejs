@@ -26,7 +26,7 @@ export function Scene() {
         var planeGeometry = new THREE.PlaneGeometry(14, 14, 4, 4);
 
 
-        var meshMaterial = new THREE.MeshNormalMaterial({color: 0x7777ff});
+        var meshMaterial = new THREE.MeshNormalMaterial();
         var sphere = new THREE.Mesh(sphereGeometry, meshMaterial);
         var cube = new THREE.Mesh(cubeGeometry, meshMaterial);
         var plane = new THREE.Mesh(planeGeometry, meshMaterial);
@@ -44,14 +44,13 @@ export function Scene() {
             b = new THREE.Vector3(), 
             c = new THREE.Vector3(); // for re-use
 
-        for( let f = 0; f < position.count - 1; f++ ){
+
+        for( let f = 0; f < index.count / 3; f++ ){
             let idxBase = f * 3;
             a.fromBufferAttribute( position, index.getX( idxBase + 0 ) );
             b.fromBufferAttribute( position, index.getX( idxBase + 1 ) );
             c.fromBufferAttribute( position, index.getX( idxBase + 2 ) );
             tri.set( a, b, c );
-
-            console.log(tri);
 
             let dir = new THREE.Vector3();
             let origin = new THREE.Vector3();
@@ -201,7 +200,6 @@ export function Scene() {
 
             }
 
-            scene.add(e);
         });
 
         render();

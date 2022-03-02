@@ -2,3 +2,21 @@
    title: '构建Three.js应用的基本组件'
    slug: '/chapter-04/index'
 ---
+
+通过前面章节的学习，我们已经知道材质 + Geometry可以构成Mesh——可以添加到3D场景中的物体。
+
+Geometry就好像是骨架，材质则类似于皮肤，它定义了Geometry的外观——是否有金属质感、是否透明、是否显示为线框（wireframe）。
+
+|材质|说明|
+|---|---|
+|MeshBasicMaterial|基本的材质，显示为简单的颜色或者显示为线框。不考虑光线的影响|
+|MeshDepthMaterial|使用简单的颜色，但是颜色深度和距离相机的远近有关|
+|MeshNormalMaterial|基于面Geometry的法线（normals）数组来给面着色|
+|MeshFacematerial|容器，允许为Geometry的每一个面指定一个材质|
+|MeshLambertMaterial|考虑光线的影响，哑光材质|
+|MeshPhongMaterial|考虑光线的影响，光泽材质|
+|ShaderMaterial|允许使用自己的着色器来控制顶点如何被放置、像素如何被着色|
+|LineBasicMaterial|用于THREE.Line对象，创建彩色线条|
+|LineDashMaterial|用于THREE.Line对象，创建虚线条|
+|RawShaderMaterial|仅和THREE.BufferedGeometry联用，优化静态Geometry（顶点、面不变）的渲染|
+
