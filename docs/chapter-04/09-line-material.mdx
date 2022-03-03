@@ -1,0 +1,34 @@
+---
+    title: '线性几何体的材质'
+---
+
+
+有两类仅仅支持用在线条（THREE.Line）的材质。线条这种特殊的Geometry仅仅具有顶点，而没有面。
+
+## THREE.LineBasicMaterial
+
+用于线段的基础材质
+
+|名称|描述|
+|---|---|
+|color|线条的颜色|
+|linewidth|线条的宽度|
+|linecap|这个属性定义了线框模式下顶点间线段的端点如何显示.在实际情况下很难看出,WebGLRenderer对象不支持该属性|
+|linejoin|这个属性定义了线段连接点如何显示.如何你再一个使用地透明度和很大wireframeLinewidth值的例子中靠近观察,就可以看到这个属性的效果.WebGLRenderer不支持该属性|
+|vertexColors|将这个值设置成THREE.VertexColors值,就可以给每个顶点指定一个颜色|
+
+
+import { Scene } from './09-line-material.jsx';
+
+<Scene />
+
+<br/>
+
+
+## THREE.LineDashMaterial
+
+import { Scene as SceneB } from './10-line-material-dashed.jsx';
+
+<SceneB />
+
+<br/>
