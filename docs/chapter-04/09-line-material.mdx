@@ -7,7 +7,7 @@
 
 ## THREE.LineBasicMaterial
 
-用于线段的基础材质
+用于线段的基础材质,下面列出了LineBasicMaterial可用的属性
 
 |名称|描述|
 |---|---|
@@ -24,11 +24,74 @@ import { Scene } from './09-line-material.jsx';
 
 <br/>
 
+创建Line的网格模型很简单
+
+```jsx title='chapter-04/09-line-material.jsx'
+// get the turtle 
+var points = gosper(4, 60);
+
+var lines = [];
+var colors = [];
+var i = 0;
+points.forEach(function (e) {
+    lines.push(e.x, e.z, e.y);
+    let color = new THREE.Color(0xffffff);
+    color.setHSL(e.x / 100 + 0.5, (  e.y * 20 ) / 300, 0.8);
+    colors.push(color.r,color.g,color.b);
+    i++;
+});
+
+var material = new THREE.LineBasicMaterial({
+    opacity: 1.0,
+    color: 0xffffff,
+    linewidth: 1,
+    vertexColors: true
+});
+
+var geometry = new THREE.BufferGeometry();
+geometry.setAttribute('position',new THREE.Float32BufferAttribute(lines,3));
+geometry.setAttribute('color',new THREE.Float32BufferAttribute(colors,3));
+
+var line = new THREE.Line(geometry, material);
+line.position.set(25, -30, -60);
+scene.add(line);
+```
+
+第一行代码 var points = gosper(4, 60); 用来获取一个gosper曲线,这个函数用来二位空间的一个算法. 接下来我们将position,color放入BufferGeometry中.
+
+:::info
+在这个例子里用setHSL()方法设置颜色。要使用HSL，需提供色调（hue）、饱和度（saturation）和亮度（lightness），而不是提供红、绿、蓝的值。用HSL比RGB更直观，而且也更容易创建出匹配的颜色集合。
+你可以在CSS规范里找到关于HSL的解释，网址是：http://www.w3.org/TR/2003/CR-css3-color-20030514/#hsl-color。
+:::
+
+然后创建LineBasicMaterial材质并设置vertexColors值为true,代表使用vetex上的颜色值.
 
 ## THREE.LineDashMaterial
+
+这种材质有与THREE.LineBasicMaterial一样的属性，还有几个额外的属性，可以用来定义虚线的宽度和虚线之间的间隙的宽度
 
 import { Scene as SceneB } from './10-line-material-dashed.jsx';
 
 <SceneB />
 
 <br/>
+
+|名称|说明|
+|---|---|
+|scale|虚线条、线条间隔的缩放比例|
+|dashSize|虚线条的大小|
+|gapSize|线条间隔的大小|
+
+材质的用法和THREE.LineBasicMaterial一样,
+
+```jsx title='chapter-04/10-line-material-dashed.jsx'
+var material = new THREE.LineDashedMaterial({
+    vertexColors: true,
+    color: 0xffffff,
+    dashSize: 2,
+    gapSize: 2,
+    scale: 0.1
+});
+```
+
+唯一的区别是必须调用computeLineDistance()（用来计算线段顶点之间的距离）。如果不这么做，间隔就不会正确地显示。

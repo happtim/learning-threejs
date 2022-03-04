@@ -44,10 +44,10 @@ export function Scene() {
         });
 
         var material = new THREE.LineBasicMaterial({
-            //opacity: 1.0,
+            opacity: 1.0,
             color: 0xffffff,
             linewidth: 1,
-            vertexColors: true
+            vertexColors: true 
         });
 
         var geometry = new THREE.BufferGeometry();
