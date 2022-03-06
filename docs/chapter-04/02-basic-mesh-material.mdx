@@ -6,7 +6,7 @@
 
 MeshBasicMaterial是一种非常简单的材质，这种材质不考虑场景中光照的影响。使用这种材质的网格会被渲染成简单的平面多边形，而且也可以显示几何体的线框。
 
-import { Scene } from './01-basic-mesh-material.jsx';
+import { Scene } from './02a-basic-mesh-material.jsx';
 
 <Scene />
 
@@ -22,7 +22,7 @@ import { Scene } from './01-basic-mesh-material.jsx';
 
 创建一个网格标准材质很简单,我们可以使用右上角的菜单来控制渲染效果.
 
-```jsx title='chapter-04/01-basic-mesh-material.jsx'
+```jsx title='chapter-04/02a-basic-mesh-material.jsx'
 var meshMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
 ```
 
@@ -36,7 +36,7 @@ var meshMaterial = new THREE.MeshBasicMaterial({color: 0x7777ff});
 
 距离是基于相机的near和far值,距离near越近颜色越白,离相机的far约近约黑. 同时如果对象不在near和far之前的平面内,不会被渲染出来.
 
-import { Scene as SceneB } from './02-depth-material.jsx';
+import { Scene as SceneB } from './02b-depth-material.jsx';
 
 <SceneB />
 
@@ -46,7 +46,7 @@ near 和 far之间的大小决定了场景中物体的亮度和消失速度,如�
 
 创建 MeshDepthMaterial 非常简单, 但是要记住,在render的时候要更新相机.
 
-```jsx title='chapter-04/02-depth-material.jsx'
+```jsx title='chapter-04/02b-depth-material.jsx'
 scene.overrideMaterial = new THREE.MeshDepthMaterial();
 ...
 function render() {
@@ -62,13 +62,13 @@ function render() {
 
 THREE.MeshDepthMaterial 是没有颜色的属性的,如果要加给MeshDepthMaterial添加颜色,就要使用MeshBasicMaterial添加颜色,并且将两个材质合并在一起.
 
-import { Scene as SceneC } from './03-combined-material.jsx';
+import { Scene as SceneC } from './02c-combined-material.jsx';
 
 <SceneC />
 
 <br/>
 
-```jsx title='chapter-04/03-combined-material.jsx'
+```jsx title='chapter-04/02c-combined-material.jsx'
 import * as SceneUtils  from "three/examples/jsm/utils/SceneUtils";
 ...
 var cubeGeometry = new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize);
@@ -96,7 +96,7 @@ var cube = SceneUtils.createMultiMaterialObject(cubeGeometry, [colorMaterial, cu
 可以将旋转的对象选择为球体(sphere),并且将flatshading属性设置成true. 查看效果比比较明显.
 球体上每个三角面上面的箭头就是这个面的法向量.由于球体每个三角面的法向量都不同所以我们得到了一个色彩斑斓的球体.
 
-import { Scene as SceneD } from './04-mesh-normal-material.jsx';
+import { Scene as SceneD } from './02d-mesh-normal-material.jsx';
 
 <SceneD />
 
@@ -112,7 +112,7 @@ var meshMaterial = new THREE.MeshNormalMaterial();
 下面代码展示了如何添加每个三角面的法向量.我们从bufferGeometry中的index序列中获取每个三角面顶点的序号.
 再从position属性中按照序号将Vertex3顶点获取到. 然后创建一个THREE.Triangle来代表一个三角面.
 
-```jsx title='chapter-04/04mesh-normal-material.jsx'
+```jsx title='chapter-04/02d-mesh-normal-material.jsx'
 let position = sphere.geometry.getAttribute('position');
 let index = sphere.geometry.index;
 
@@ -153,7 +153,7 @@ for( let f = 0; f < index.count / 3; f++ ){
 
 该案例是一个魔方的,3*3 共9个小立方体组成.
 
-import { Scene as SceneE } from './05-mesh-face-material.jsx';
+import { Scene as SceneE } from './02e-mesh-face-material.jsx';
 
 <SceneE />
 
@@ -163,7 +163,7 @@ import { Scene as SceneE } from './05-mesh-face-material.jsx';
 记住小方块的位置是基于group的位置,如果group发生了移动或者旋转,所有的小方块都会执行相同的动作.
 
 
-```jsx title='05-mesh-face-material.jsx'
+```jsx title='chapter-04/02e-mesh-face-material.jsx'
 var group = new THREE.Mesh();
 // add all the rubik cube elements
 var mats = [];

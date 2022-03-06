@@ -1,0 +1,92 @@
+---
+    title: '高级材质'
+---
+
+THREE.MeshPhongMaterial和THREE.MeshLambertMaterial。这两种材质会对光源做出反应，并且可以分别用来创建光亮的材质和暗淡的材质。本节还会介绍一种最通用但也最难用的材质：THREE.ShaderMaterial。通过THREE.ShaderMaterial，可以创建自己的着色程序，定义材质和物体如何显示。
+
+## THREE.MeshLambertMaterial
+
+这种材质可以用来创建暗淡的并不光亮的表面。该材质非常易用，而且会对场景中的光源产生反应。
+
+import { Scene } from './03a-mesh-lambert-material.jsx';
+
+<Scene />
+
+<br/>
+
+创建MeshLambertMaterial很简单. 参数除了基本属性还有:
+
+|名称|说明|
+|---|---|
+|color|材料的环境色|
+|emissive|材质自发光的颜色.该属性虽然不会让使用它的物体变成光源,但是会使物体的颜色不受其他光源的影响.在没有光源的的暗处,设置该值,可以实现物体自发光|
+|wireframe|该属性可以true时,可以绘制具有光照效果的线框物体.|
+
+
+```jsx title='chapter-04/03a-mesh-lambert-material.jsx'
+var meshMaterial = new THREE.MeshLambertMaterial({color: 0x7777ff});
+```
+
+
+## THREE.MeshPhongMaterial
+
+通过THREE.MeshPhongMaterial可以创建一种光亮的材质.
+
+
+import { Scene as SceneB } from './03b-mesh-phong-material.jsx';
+
+<SceneB />
+
+<br/>
+
+创建MeshPhongMaterial很简单. 参数除了基本属性还有:
+
+|名称|说明|
+|---|---|
+|color|材料的环境色|
+|emissive|材质自发光的颜色.该属性虽然不会让使用它的物体变成光源,但是会使物体的颜色不受其他光源的影响.在没有光源的的暗处,设置该值,可以实现物体自发光|
+|specular|该属性指定该材质的光亮程度及高光部分的颜色,如果将它设置和color属性相同的颜色,将会得到一个更加类似金属的材质.如果将他设置成灰色(grey),材质将变得更像塑料|
+|shiness|该属性指定物体表面镜面高光部分的轮廓的清晰度,越光滑的表面,高光部分越清晰,反之越模糊,该值默认30|
+
+```jsx title='chapter-04/03b-mesh-phong-material.jsx'
+var meshMaterial = new THREE.MeshPhongMaterial({color: 0x7777ff});
+```
+
+
+## THREE.MeshStardardMaterial
+
+THREE.MeshStandardMaterial这种材质使用更加正确的物理计算来决定物体表面如何与场景中的光源互动。这种材质能够更好地表现塑料质感和金属质感的表面.
+
+import { Scene as SceneC } from './03c-mesh-standard-material.jsx';
+
+<SceneC />
+
+<br/>
+
+创建MeshStardardMaterial很简单. 参数除了基本属性还有:
+
+|名称|说明|
+|---|---|
+|metalness(金属感程度)|该属性控制物体表面的金属质感程度.0代表完全塑料质感,1代表完全金属质感|
+|roughness(粗糙程度)|该属性控制物体表面的粗糙程度.在视觉上,它决定表面对入射光的漫反射程度.当值为0时会产生类似镜面反射的效果,当1时会产生完全的漫反射效果.|
+
+## THREE.MeshPhysicaMaterial
+
+该材质与THREE.MeshStandardMaterial非常相似，但提供了对反光度的更多控制，因此它除了具有标准材质的全部属性之外:
+
+|名称|说明|
+|---|---|
+|clearCoat(清漆)|该属性控制物体表面清漆涂层效果的明显程度,该属性值越高,则清漆涂层越厚,其结果是clearCoatRoughness属性带来的影响越明显|
+|clearCoatRoughness(清漆粗糙程度)|该属性控制物体表面清漆涂层的粗糙程度,粗糙程度越高,漫反射越明显.该属性需要和上面clearCoat属性配合使用|
+|reflectivity|该属性用于控制非金属表面的反光度,因此当metalness(金属感程度)接近1时该属性的作用很小.|
+
+import { Scene as SceneD } from './03d-mesh-physica-material.jsx';
+
+<SceneD />
+
+<br/>
+
+
+:::info
+与其他材质类似，这两种新材质在不动手实验的情况下，也难以确定什么样的参数值才能最符合某种特定需求。因此最佳的实践方法就是给程序增加一个简单的UI（就像我们在前面示例中所做的那样），并通过一边调节参数一边观察的方法来寻找最满意的参数组合。
+:::

@@ -1,5 +1,3 @@
-
-
 import * as THREE from 'three';
 import React , { useRef, useEffect }from 'react';
 import { InitStats} from '/src/components/initStats';

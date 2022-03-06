@@ -18,7 +18,7 @@
 |vertexColors|将这个值设置成THREE.VertexColors值,就可以给每个顶点指定一个颜色|
 
 
-import { Scene } from './09-line-material.jsx';
+import { Scene } from './04a-line-material.jsx';
 
 <Scene />
 
@@ -26,7 +26,7 @@ import { Scene } from './09-line-material.jsx';
 
 创建Line的网格模型很简单
 
-```jsx title='chapter-04/09-line-material.jsx'
+```jsx title='chapter-04/04a-line-material.jsx'
 // get the turtle 
 var points = gosper(4, 60);
 
@@ -70,7 +70,7 @@ scene.add(line);
 
 这种材质有与THREE.LineBasicMaterial一样的属性，还有几个额外的属性，可以用来定义虚线的宽度和虚线之间的间隙的宽度
 
-import { Scene as SceneB } from './10-line-material-dashed.jsx';
+import { Scene as SceneB } from './04b-line-material-dashed.jsx';
 
 <SceneB />
 
@@ -84,7 +84,7 @@ import { Scene as SceneB } from './10-line-material-dashed.jsx';
 
 材质的用法和THREE.LineBasicMaterial一样,
 
-```jsx title='chapter-04/10-line-material-dashed.jsx'
+```jsx title='chapter-04/04b-line-material-dashed.jsx'
 var material = new THREE.LineDashedMaterial({
     vertexColors: true,
     color: 0xffffff,
