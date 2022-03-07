@@ -1,25 +1,24 @@
-<!DOCTYPE html>
+import * as THREE from 'three';
+import React , { useRef, useEffect }from 'react';
+import { InitStats} from '/src/components/initStats';
+import { InitScene} from '/src/components/initScene';
+import { InitGui } from '/src/components/initGui';
 
-<html>
+export function Scene() {
 
-<head>
-    <title>Example 04.08 - Shader material - http://glsl.heroku.com/</title>
-    <script type="text/javascript" src="../libs/three.js"></script>
+    const ref = useRef(null);
 
-    <script type="text/javascript" src="../libs/stats.js"></script>
-    <script type="text/javascript" src="../libs/dat.gui.js"></script>
-    <style>
-        body {
-            /* set margin to 0 and overflow to hidden, to go fullscreen */
-            margin: 0;
-            overflow: hidden;
-        }
-    </style>
-</head>
-<body>
+    useEffect(()=>{
 
-<script id="vertex-shader" type="x-shader/x-vertex">
-    uniform float time;
+        const div = ref.current;
+        var [scene, camera, renderer] = InitScene(div);
+        var stats = InitStats('d');
+        var gui = InitGui('d');
+
+        var cubeGeometry = new THREE.BoxGeometry(20, 20, 20);
+
+        const vertexShader = `
+         uniform float time;
     varying vec2 vUv;
 
 
@@ -32,11 +31,10 @@
     //gl_Position = projectionMatrix * modelViewMatrix * vec4(position*(abs(sin(time)/2.0)+0.5),1.0);
     gl_Position = projectionMatrix * modelViewMatrix * vec4(posChanged,1.0);
     }
+        `;
 
-</script>
-
-<script id="fragment-shader-1" type="x-shader/x-fragment">
-    precision highp float;
+        const fragmentShader1 = `
+         precision highp float;
     uniform float time;
     uniform float alpha;
     uniform vec2 resolution;
@@ -78,15 +76,10 @@
 
     gl_FragColor = vec4(col*1.0, -col*1.0,-col*4.0, 1.0);
     }
+        `;
 
-
-</script>
-
-<script id="fragment-shader-2" type="x-shader/x-fragment">
-    // from http://glsl.heroku.com/e#7906.0
-
-
-    uniform float time;
+        const fragmentShader2 = `
+        uniform float time;
     uniform vec2 resolution;
 
     // 2013-03-30 by @hintz
@@ -162,11 +155,10 @@
 
     gl_FragColor = vec4( hsvtorgb(dd+time*0.5/d1, sin(dd*time), d2), 1.0 );
     }
+        `;
 
-</script>
-
-<script id="fragment-shader-3" type="x-shader/x-fragment">
-    uniform vec2 resolution;
+        const fragmentShader3 = `
+ uniform vec2 resolution;
     uniform float time;
 
     vec2 rand(vec2 pos)
@@ -205,14 +197,11 @@
     s *= 2.0;
     }
     gl_FragColor = vec4(color);
-    }
+    } 
+        `;
 
-</script>
-
-<script id="fragment-shader-4" type="x-shader/x-fragment">
-
-
-    uniform float time;
+        const fragmentShader4 = `
+         uniform float time;
     uniform vec2 resolution;
 
     vec2 rand(vec2 pos)
@@ -257,12 +246,10 @@
     }
     gl_FragColor = vec4(color,mix(color,cos(color),sin(color)),color,1);
     }
+        `;
 
-</script>
-
-<script id="fragment-shader-5" type="x-shader/x-fragment">
-
-    uniform float time;
+        const fragmentShader5 = `
+        uniform float time;
     uniform vec2 resolution;
 
     // tie nd die by Snoep Games.
@@ -286,14 +273,10 @@
     if(a<0.5) a=a*22.5;
     gl_FragColor = vec4( cos(a/20.0),a*cos(a/200.0),sin(a/8.0), 1.0 );
     }
+        `;
 
-
-</script>
-
-<script id="fragment-shader-6" type="x-shader/x-fragment">
-
-
-    uniform float time;
+        const fragmentShader6 = `
+       uniform float time;
     uniform vec2 resolution;
 
 
@@ -321,67 +304,27 @@
     vec4 color_final = vec4(color, 1.0);
     gl_FragColor = color_final;
     }
-
-</script>
-
-<div id="Stats-output">
-</div>
-<!-- Div which will hold the Output -->
-<div id="WebGL-output">
-</div>
-
-<!-- Javascript code that runs our Three.js examples -->
-<script type="text/javascript">
-
-    // once everything is loaded, we run our Three.js stuff.
-    function init() {
-
-        var stats = initStats();
-
-        // create a scene, that will hold all our elements such as objects, cameras and lights.
-        var scene = new THREE.Scene();
-
-        // create a camera, which defines where we're looking at.
-        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-
-        // create a render and set the size
-
-        var renderer = new THREE.WebGLRenderer();
-        renderer.setClearColor(new THREE.Color(0x000000, 1.0));
-        renderer.setSize(window.innerWidth, window.innerHeight);
-        renderer.shadowMapEnabled = true;
+        `;
+        var meshMaterial1 = createMaterial(vertexShader, fragmentShader1);
+        var meshMaterial2 = createMaterial(vertexShader, fragmentShader2);
+        var meshMaterial3 = createMaterial(vertexShader, fragmentShader3);
+        var meshMaterial4 = createMaterial(vertexShader, fragmentShader4);
+        var meshMaterial5 = createMaterial(vertexShader, fragmentShader5);
+        var meshMaterial6 = createMaterial(vertexShader, fragmentShader6);
 
 
-        var cubeGeometry = new THREE.BoxGeometry(20, 20, 20);
-
-        var meshMaterial1 = createMaterial("vertex-shader", "fragment-shader-1");
-        var meshMaterial2 = createMaterial("vertex-shader", "fragment-shader-2");
-        var meshMaterial3 = createMaterial("vertex-shader", "fragment-shader-3");
-        var meshMaterial4 = createMaterial("vertex-shader", "fragment-shader-4");
-        var meshMaterial5 = createMaterial("vertex-shader", "fragment-shader-5");
-        var meshMaterial6 = createMaterial("vertex-shader", "fragment-shader-6");
-
-
-        var material = new THREE.MeshFaceMaterial(
-                [meshMaterial1,
-                    meshMaterial2,
-                    meshMaterial3,
-                    meshMaterial4,
-                    meshMaterial5,
-                    meshMaterial6]);
-//        var material = new THREE.MeshFaceMaterial([meshMaterial2, meshMaterial2, meshMaterial1, meshMaterial1, meshMaterial1, meshMaterial1]);
-
+        var material = [
+            meshMaterial1,
+            meshMaterial2,
+            meshMaterial3,
+            meshMaterial4,
+            meshMaterial5,
+            meshMaterial6
+        ];
         var cube = new THREE.Mesh(cubeGeometry, material);
-
 
         // add the sphere to the scene
         scene.add(cube);
-
-        // position and point the camera to the center of the scene
-        camera.position.x = 30;
-        camera.position.y = 30;
-        camera.position.z = 30;
-        camera.lookAt(new THREE.Vector3(0, 0, 0));
 
         // add subtle ambient lighting
         var ambientLight = new THREE.AmbientLight(0x0c0c0c);
@@ -392,9 +335,6 @@
         spotLight.position.set(-40, 60, -10);
         spotLight.castShadow = true;
         scene.add(spotLight);
-
-        // add the output of the renderer to the html element
-        document.getElementById("WebGL-output").appendChild(renderer.domElement);
 
         // call the render function
         var step = 0;
@@ -429,8 +369,7 @@
             cube.rotation.x = step;
             cube.rotation.z = step;
 
-
-            cube.material.materials.forEach(function (e) {
+            cube.material.forEach(function (e) {
                 e.uniforms.time.value += 0.01;
             });
 
@@ -440,28 +379,11 @@
             renderer.render(scene, camera);
         }
 
-        function initStats() {
-
-            var stats = new Stats();
-
-            stats.setMode(0); // 0: fps, 1: ms
-
-
-            // Align top-left
-            stats.domElement.style.position = 'absolute';
-            stats.domElement.style.left = '0px';
-            stats.domElement.style.top = '0px';
-
-            document.getElementById("Stats-output").appendChild(stats.domElement);
-
-            return stats;
-        }
 
         function createMaterial(vertexShader, fragmentShader) {
-            var vertShader = document.getElementById(vertexShader).innerHTML;
-            var fragShader = document.getElementById(fragmentShader).innerHTML;
+            var vertShader = vertexShader;
+            var fragShader = fragmentShader;
 
-            var attributes = {};
             var uniforms = {
                 time: {type: 'f', value: 0.2},
                 scale: {type: 'f', value: 0.2},
@@ -469,25 +391,35 @@
                 resolution: {type: "v2", value: new THREE.Vector2()}
             };
 
-            uniforms.resolution.value.x = window.innerWidth;
-            uniforms.resolution.value.y = window.innerHeight;
+            uniforms.resolution.value.x = div.clientWidth;
+            uniforms.resolution.value.y = div.clientHeight;
 
             var meshMaterial = new THREE.ShaderMaterial({
                 uniforms: uniforms,
-                attributes: attributes,
                 vertexShader: vertShader,
                 fragmentShader: fragShader,
                 transparent: true
-
             });
 
 
             return meshMaterial;
         }
 
+    },[]);
 
-    }
-    window.onload = init;
-</script>
-</body>
-</html>
+    return (
+   
+        <div
+            style={{
+                height: 500 ,
+                position:'relative'
+            }}
+            ref={ref}
+        >
+        <div id="Stats-output-e" >
+        </div>
+        <div id="Gui-output-e">
+        </div>
+        </div>
+    );
+}  
