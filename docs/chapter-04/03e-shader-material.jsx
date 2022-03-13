@@ -12,8 +12,8 @@ export function Scene() {
 
         const div = ref.current;
         var [scene, camera, renderer] = InitScene(div);
-        var stats = InitStats('d');
-        var gui = InitGui('d');
+        var stats = InitStats('e');
+        var gui = InitGui('e');
 
         var cubeGeometry = new THREE.BoxGeometry(20, 20, 20);
 

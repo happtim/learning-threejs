@@ -1,0 +1,48 @@
+---
+   title: '学习使用几何体'
+   slug: '/chapter-05/index'
+---
+
+本章展示Three.js提供的所有集合体
+
+* THREE.CircleGeometry（圆形）
+* THREE.RingGeometry（环形）
+* THREE.PlaneGeometry（平面）
+* THREE.ShapeGeometry（任意图形）
+* THREE.BoxGeometry（长方体）
+* THREE.SphereGeometry（球体）
+* THREE.CylinderGeometry（圆柱体）
+* THREE.ConeGeometry（圆锥体）
+* THREE.TorusGeometry（圆环）
+* THREE.TorusKnotGeometry（环状扭结）
+* THREE.PolyhedronGeometry（多面体）
+* THREE.IcosahedronGeometry（二十面体）
+* THREE.OctahedronGeometry（八面体）
+* THREE.TetraHedronGeometry（四面体）
+* THREE.DodecahedronGeometry（十二面体）
+
+## Geometry与BufferGeometry区别
+
+在开始学习Three.js提供的几何体之前，需要首先深入了解一下Three.js中用于代表几何体的两个可用基类：THREE.Geometry和THREE.BufferGeometry。
+前者是旧版本中所有几何体的基类，而后者则由新版本提供给开发者。
+新几何体基类THREE.BufferGeometry的内部数据组织形式与GPU所期待的数据结构保持一致，从而进一步提高了运行效率。
+但是作为代价，新几何体基类的易用性稍差一些。
+
+旧几何体用Three.Geometry使用vertexs和faces来定义集合体的形状. 使用这两个属性定义几何体非常易于理解和使用.
+你可以直接向几何体添加新的顶点和面.
+
+在新的Three.BufferGeometry中.只有attributes和index属性, attribute当作分量来理解,因为一个顶点数据往往由多个attribute分量组成,有坐标,颜色,法向量,纹理等.
+
+:::info
+有时我们需要在基于THREE.Geometry的几何体和基于THREE.BufferGeometry的几何体之间转换.
+下面代码将基于THREE.BufferGeometry的对象转换为基于THREE.Geometry的对象:
+```
+var normalGeometry  = new THREE.Geometry();
+normalGeometry.fromBufferGeometry(BufferGeometry)
+```
+下面代码则进行反转
+```
+var bufferGeometry  = new THREE.BufferGeometry();
+bufferGeometry.fromGeometry(normalGeometry);
+```
+:::

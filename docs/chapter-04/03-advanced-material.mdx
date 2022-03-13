@@ -94,8 +94,116 @@ import { Scene as SceneD } from './03d-mesh-physica-material.jsx';
 
 ## THREE.ShaderMaterial
 
+THREE.ShaderMaterial是Three.js库中最通用、最复杂的材质之一。通过它，可以使用自己定制的着色器，直接在WebGL环境中运行。
+着色器可以将Three.js中的JavaScript网格转换为屏幕上的像素。
+通过这些自定义的着色器，可以明确地指定对象如何渲染，以及如何覆盖或修改Three.js库中的默认值。
+
+
+THREE.ShaderMaterial 有一些我们已经见过的属性可以设置属性.如wireframe,wireframeLinewidth,linewidth,shading,vertexColors,fog.
+除了基础属性之外还有几个自己本身的属性,可以用来给自己定制着色器传入更多信息.
+
+|名称|描述|
+|---|---|
+|fragmentShader|这个着色器定义的是每个传入像素的颜色.你需要传入像素着色器程序的字符串|
+|vertexShader|这个着色器允许修改每一个传入的顶点位置,你需要传入顶点着色器程序的字符串|
+|uniforms|通过这个属性可以向你的着色器发信息,同样的信息会发送给每一个顶点和片段|
+|defines|转化成#define代码片段,这些代码片段可以用来设置着色器程序里面的一些额外的全局变量|
+|lights|该属性定义光照数据是否传递给着色器.|
+
+要创建一个ShaderMaterial必须传入两个不同的着色器:
+* vertexShader: 它会在几何体的每一个顶点上执行。可以用这个着色器通过改变顶点的位置来对几何体进行变换。
+* fragmentShader: 它会在几何体的每一个片段上执行。在VertexShader里，我们会返回这个特定片段应该显示的颜色。
+
+这个例子使用了一个非常简单的vertexShader程序，用来修改一个方块各个顶点的x、y、z坐标，还会用到一个fragmentShader程序，使用来自http://glslsandbox.com/的着色器创建连续变化的材质。
+
+接下来你会看到我们使用vertexShader的完整代码。请注意，着色器不是用JavaScript编写的。
+需要使用类似C的GLSL语言（WebGL支持OpenGL ES着色语言1.0——更多关于GLSL的信息，参考 [https://www.khronos.org/webgl/](https://www.khronos.org/webgl/) ）来写着色器.
+
+```glsl title='chapter-04/03e-shader-material.jsx'
+uniform float time;
+varying vec2 vUv;
+
+void main()
+{
+    vec3 posChanged = position;
+    posChanged.x = posChanged.x*(abs(sin(time*1.0)));
+    posChanged.y = posChanged.y*(abs(cos(time*1.0)));
+    posChanged.z = posChanged.z*(abs(sin(time*1.0)));
+    //gl_Position = projectionMatrix * modelViewMatrix * vec4(position*(abs(sin(time)/2.0)+0.5),1.0);
+    gl_Position = projectionMatrix * modelViewMatrix * vec4(posChanged,1.0);
+}
+```
+
+要与JavaScript中的着色器通信，我们会使用一种称为“统一值”（uniform）的方法。
+在这个例子中，我们使用“uniform float time；”语句传入一个外部值。
+基于此值，我们会改变传入顶点的x、y、z坐标（通过position变量传入）
+
+```
+vec3 posChanged = position;
+posChanged.x = posChanged.x*(abs(sin(time*1.0)));
+posChanged.y = posChanged.y*(abs(cos(time*1.0)));
+posChanged.z = posChanged.z*(abs(sin(time*1.0)));
+```
+
+现在向量posChanged包含的就是顶点的新坐标，根据传入的time变量计算得到。我们最后一步要做的就是将这个新坐标传回Three.js.
+gl_Position变量是一个特殊变量，用来返回最终的位置.
+
+
 import { Scene as SceneE } from './03e-shader-material.jsx';
 
 <SceneE />
 
 <br/>
+
+在这个例子里，方块的每个面都在不断变化。正是每个面上的fragment Shader造就了这种变化。
+在本例中，所有的fragmentShader对象都是从http://glslsandbox.com/复制过来的。
+这个网站提供了一个试验环境，可以在这里创建和分享fragmentShader对象。
+
+```
+  precision highp float;
+    uniform float time;
+    uniform float alpha;
+    uniform vec2 resolution;
+    varying vec2 vUv;
+
+    void main2(void)
+    {
+    vec2 position = vUv;
+    float red = 1.0;
+    float green = 0.25 + sin(time) * 0.25;
+    float blue = 0.0;
+    vec3 rgb = vec3(red, green, blue);
+    vec4 color = vec4(rgb, alpha);
+    gl_FragColor = color;
+    }
+
+    #define PI 3.14159
+    #define TWO_PI (PI*2.0)
+    #define N 68.5
+
+    void main(void)
+    {
+    vec2 center = (gl_FragCoord.xy);
+    center.x=-10.12*sin(time/200.0);
+    center.y=-10.12*cos(time/200.0);
+
+    vec2 v = (gl_FragCoord.xy - resolution/20.0) / min(resolution.y,resolution.x) * 15.0;
+    v.x=v.x-10.0;
+    v.y=v.y-200.0;
+    float col = 0.0;
+
+    for(float i = 0.0; i < N; i++)
+    {
+    float a = i * (TWO_PI/N) * 61.95;
+    col += cos(TWO_PI*(v.y * cos(a) + v.x * sin(a) + sin(time*0.004)*100.0 ));
+    }
+
+    col /= 5.0;
+
+    gl_FragColor = vec4(col*1.0, -col*1.0,-col*4.0, 1.0);
+}
+```
+
+最终传回给Three.js的颜色是通过语句gl_FragColor=color_final设置的。
+
+
