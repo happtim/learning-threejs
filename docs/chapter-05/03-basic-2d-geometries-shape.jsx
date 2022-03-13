@@ -3,7 +3,7 @@ import React , { useRef, useEffect }from 'react';
 import { InitStats} from '/src/components/initStats';
 import { InitScene} from '/src/components/initScene';
 import { InitGui } from '/src/components/initGui';
-import  {group as mesh, updateGroupGeometry} from './InitMesh';
+import  {InitMesh, updateGroupGeometry} from './InitMesh';
 
 export function Scene() 
 {
@@ -25,7 +25,8 @@ export function Scene()
         // call the render function
         var step = 0;
 
-        //scene.add( mesh );
+        let mesh = InitMesh();
+        scene.add( mesh );
 
         const x = 0, y = 0;
         const heartShape = new THREE.Shape();
