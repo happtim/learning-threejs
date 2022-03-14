@@ -1,0 +1,120 @@
+---
+    title: '二维几何体'
+---
+
+二维几何体看上去是扁平的,他们只有两个维度
+
+## THREE.PlaneGeometry(平面几何体)
+
+PlaneGeometry 对象可以用来创建一个非常简单的二维矩形.
+
+import { Scene } from './01a-basic-2d-geometries-plane.jsx';
+
+<Scene />
+
+<br/>
+
+示例程序有控制界面，既可用于修改几何体的属性（例如高、宽、横向网格宽度和纵向网格高度），也可用于修改材质（及其属性），禁用阴影和隐藏地面等。
+
+创建这种几何体非常简单.
+
+```jsx
+new THREE.PlaneGeometry(width,height,widthSegments,heightSegments);
+```
+
+可以修改属性的列表如下:
+
+|属性|是否必须|描述|
+|---|---|---|
+|width(宽度)|是|矩形的宽度|
+|height(高度)|是|矩形的高度|
+|widthSegments(宽度段数)|否|矩形的宽度分成段数,默认1|
+|heightSegments(高度段数)|否|矩形的高度分成段数,默认1|
+
+
+## THREE.CircleGeometry(圆几何体)
+
+通过THREE.CircleGeometry几何体，你可以创建一个非常简单的二维圆（或部分圆）.
+
+import { Scene as SceneB } from './01b-basic-2d-geometries-circle.jsx';
+
+<SceneB />
+
+<br/>
+
+
+:::info
+2*PI表示一个以弧度表示的完整圆形。如果要使用的是度数而不是弧度，它们之间的转换非常简单。
+下面两个函数可以完成弧度和度数之间的转换:
+
+```jsx
+function deg2rad(degrees) {
+    return degrees * Math.PI / 180;
+}
+
+function rad2deg(radians){
+    return radians * 180 / Math.PI;
+}
+```
+:::
+
+可以修改属性的列表如下:
+
+|属性|是否必须|描述|
+|---|---|---|
+|radius|否|圆的半径决定了圆的大小|
+|segments|否|该属性定义了创建圆所有的面数,值越大创建出来的圆越光滑|
+|thetaStart|否|该属性定义了从哪里开始画圆,这个值是0到2PI|
+|thetaLength|否|该属性定一个圆要画多少的弧度,默认2*PI(整个圆).如果0.5*PI则是四分之一圆|
+
+```jsx
+//创建一个整圆
+new THREE.CircleGeometry(3,12);
+
+//创建一个半圆
+new THREE.CircleGeometry(3,12,0,Math.PI);
+```
+
+:::info
+Three.js创建的这些对象都是“直立”的，所以它们只位于x-y平面。但是对于THREE.PlaneGeometry，你会希望这个网格“躺”下来，以便构建一种地面（x-z平面），好把其他对象放在上面。
+创面一个水平放置而不是竖直的二维对象，最简单的方法是将网格沿x轴向后旋转四分之一圈（-PI/2）。
+`mesh.rotation.x =- Math.PI/2;`
+:::
+
+
+## THREE.RingGeometry(圆环几何体)
+
+RingGeometry类似CircleGeometry,而且可以在中心定义一个孔.
+
+import { Scene as SceneC } from './01c-basic-2d-geometries-ring.jsx';
+
+<SceneC />
+
+<br/>
+
+创建圆环的代码很简单,可以不加任何的参数:
+
+```jsx
+let ring = new THREE.RingGeometry();
+```
+
+影响圆环的参数如下:
+
+|属性|是否必须|描述|
+|---|---|---|
+|innerRadius(内半径)|否|圆环内半径,定义中心圆孔的尺寸,如果值为0就不显示孔.|
+|outerRadius(外半径)|否|圆环外半径,定义了圆环的尺寸|
+|thetaSegments()|否|该属性定义了创建圆环的对角线的数量,值越大创建出来的圆环越光滑|
+|phiSegments|否|该属性定义了创建圆环长度所需要的线段数量,它并不会增加圆环的光滑度,但是会增加面数.|
+|thetaStart|否|该属性定义了从哪里开始画圆环,这个值是0到2PI|
+|thetaLength|否|该属性定一个圆环要画多少的弧度,默认2*PI(整个圆).如果0.5*PI则是四分之一圆|
+
+
+
+## THREE.Shape(自定形状几何体)
+
+import { Scene as SceneD } from './01d-basic-2d-geometries-shape.jsx';
+
+<SceneD />
+
+<br/>

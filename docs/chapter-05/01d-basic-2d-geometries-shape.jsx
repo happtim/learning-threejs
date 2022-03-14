@@ -10,12 +10,12 @@ export function Scene()
 
     const ref = useRef(null);
 
-    useEffect(()=>{
+    useEffect(()=> {
 
         const div = ref.current;
         var [scene, camera, renderer] = InitScene(div);
-        var stats = InitStats('c');
-        var gui = InitGui('c');
+        var stats = InitStats('d');
+        var gui = InitGui('d');
 
         // add spotlight for the shadows
         var spotLight = new THREE.SpotLight(0xffffff);
@@ -84,9 +84,9 @@ export function Scene()
             }}
             ref={ref}
         >
-        <div id="Stats-output-c" >
+        <div id="Stats-output-d" >
         </div>
-        <div id="Gui-output-c">
+        <div id="Gui-output-d">
         </div>
         </div>
     );
