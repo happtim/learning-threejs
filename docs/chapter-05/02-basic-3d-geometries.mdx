@@ -1,0 +1,137 @@
+---
+    title: '三维几何体'
+---
+
+## THREE.BoxGeometry (方块)
+
+THREE.BoxGeometry 是一个非常简单的三位几何体,只需要指定宽度,高度,深度就可以创建一个长方体.
+
+import { Scene } from './02a-basic-3d-geometries-box.jsx';
+
+<Scene />
+
+<br/>
+
+可以通过THREE.BoxGeometry对象的width,hegith,depth属性可以控制网格属性. 这三个属性也是创建一个长方体必须要的参数.
+
+```jsx
+new THREE.BoxGeometry(10,10,10);
+```
+
+|属性|是否必要|描述|
+|---|---|---|
+|width|是|该属性定义长方体的宽度.所谓的宽度是长方体沿x轴方向的长度|
+|height|是|该属性定义长方体的高度.所谓的宽度是长方体沿y轴方向的长度|
+|depth|是|该属性定义长方体的深度.所谓的宽度是长方体沿z轴方向的长度|
+|widthSegments|否|该属性定义的是沿x轴方向将面分成多少份.默认1|
+|heightSegments|否|该属性定义的是沿y轴方向将面分成多少份.默认1|
+|depthSegments|否|该属性定义的是沿z轴方向将面分成多少份.默认1|
+
+通过增加多个分段(segment)属性,你可以将长方体的6个大面分成很多小面. 
+
+
+## THREE.SphereGeometry (球体)
+
+通过ShphereGeometry,你可以创建一个三位的球体,
+
+import { Scene as SceneB } from './02b-basic-3d-geometries-sphere.jsx';
+
+<SceneB />
+
+<br/>
+
+这个几何体非常灵活可以创建所有跟球体相关的几何体.
+
+```jsx
+new THREE.SphereGeometry();
+```
+
+创建THREE.ShphereGeometry的参数如下. 可以在实例中调节这些参数.
+
+|属性|是否必需|描述|
+|---|---|---|
+|radius|否|该属性设置球体的半径,它决定最终网格有多大.默认值为50|
+|widthSegments|否|该属性指定竖直方向上的分段数.段数越多,球体的表面越光滑.默认值为32,最小值是3.|
+|heightSegments|否|该属性指定水平方向的分段数.段数越多,球体的表面越光滑.默认值为16,最小值是2|
+|phiStart|否|该属性用来指定x轴的什么地方开始绘制球体,取值范围0到2*PI.默认0|
+|phiLength|否|该属性用来指定球体从phiStart开始画多少.2*PI是整球,0.5*PI画的是一个打开的四分之一球.默认值为2*PI|
+|thetaStart|否|该属性用来指定y轴的什么地方开始绘制球体,取值范围0到PI.默认0|
+|thetaLength|否|该属性用来指定球体从thetaStart开始画多少.PI是整球,0.5*PI只会绘制上半球.默认值为PI|
+
+
+## THREE.CylinderGeometry (圆柱体)
+
+通过这个几何体,我们可以创建圆柱和类似圆柱的物体.
+
+import { Scene as SceneC } from './02c-basic-3d-geometries-cylinder.jsx';
+
+<SceneC />
+
+<br/>
+
+创建THREE.CylinderGeometry时,没有必须提供参数
+
+```jsx
+new THREE.CylinderGeometry();
+```
+
+但也可以通过参数来修改圆柱的外观.
+
+|属性|是否必须|描述|
+|---|---|---|
+|radiusTop|否|该属性设置圆柱顶部的尺寸.默认20|
+|radiusBottom|否|该属性设置圆柱底部的尺寸.默认20|
+|height|否|该属性设置圆柱的高度.默认100|
+|radialSegements|否|该属性设置沿圆柱的半径分成多少段.默认为8,分段越多意味着圆柱越光滑|
+|heightSegements|否|该属性设置沿圆柱的高度分成多少段.默认为1,分段越多意味着面越多|
+|opeEnded|否|该属性指定网格的顶部和底部是否封闭.默认false|
+|thetaStart|否|该属性决定了x轴上开始绘制圆柱的位置.取值范围为0到2*PI,默认值为0|
+|thetaLenght|否|该属性决定了有多少圆柱面被绘制.取值范围2*PI时绘制完整圆柱面,取值为PI时可以绘制半个圆柱面.默认值为2*PI|
+
+
+你可以在顶部或者底部使用值为负数的半径.如果这么设置,你就可以使用这个几何体创建出类似沙漏的图形.
+
+
+## THREE.ConeGeometry (圆锥体)
+
+THREE.ConeGeometry 为圆锥体, 它几乎拥有Cylinder的所有属性.
+唯一的区别就是它不支持独立的radiusTop(顶半径)和radiusBottom(底半径),而是只有一个底半径的radius属性.
+
+import { Scene as SceneD } from './02d-basic-3d-geometries-cone.jsx';
+
+<SceneD />
+
+<br/>
+
+圆锥几何体支持的属性:
+
+|属性|是否必须|描述|
+|---|---|---|
+|radius|否|该属性设置圆锥底部的尺寸.默认20|
+|height|否|该属性设置圆锥的高度.默认100|
+|radialSegements|否|该属性设置沿圆锥的半径分成多少段.默认为8,分段越多意味着圆柱越光滑|
+|heightSegements|否|该属性设置沿圆锥的高度分成多少段.默认为1,分段越多意味着面越多|
+|opeEnded|否|该属性指定网格的顶部和底部是否封闭.默认false|
+|thetaStart|否|该属性决定了x轴上开始绘制圆锥的位置.取值范围为0到2*PI,默认值为0|
+|thetaLenght|否|该属性决定了有多少圆锥面被绘制.取值范围2*PI时绘制完整圆柱面,取值为PI时可以绘制半个圆柱面.默认值为2*PI|
+
+## THREE.TorusGeometry (圆环)
+
+Torus(圆环) 是一个看起来像甜甜圈的几何体.
+
+import { Scene as SceneE } from './02e-basic-3d-geometries-torus.jsx';
+
+<SceneE />
+
+<br/>
+
+和大多数简单几何体一样,创建THREE.TorusGeometry没有必须提供的参数.
+下main列出了创建这个几何体可以指定的参数.
+
+|属性|是否必须|描述|
+|---|---|---|
+|radius|否|这个参数设置的是完整圆环的尺寸.默认100|
+|tube|否|这个参数设置的是圆环截面的半径.默认是40.|
+|radiusSegments|否|这个参数设置的是沿圆环长度方向分成的段数.默认值为8.|
+|tubularSegments|否|这个参数设置的是沿圆环宽度方向分成的段数.默认值为6.|
+|arc|否|通过这个参数,可以控制是否绘制一个完整的圆环.默认值2*PI|

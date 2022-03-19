@@ -1,0 +1,93 @@
+---
+    title: '三维几何体2'
+---
+
+## THREE.TorusKnotGeometry (圆环结)
+
+通过THREE.TorusKnotGeometry,你可以创建一个环状扭结.环状扭结是一个比较特别的结,
+看起来像一个管子绕自己几圈
+
+import { Scene } from './03a-basic-3d-geometries-torus-knot.jsx';
+
+<Scene />
+
+<br/>
+
+修改属性p和q,就可以创建各种样子的几何体,p属性定义扭结绕其轴线旋转的频率,
+q属性定义扭结绕其内部缠绕多少次.
+
+创建圆环结参数如下:
+
+|属性|是否必须|描述|
+|---|---|---|
+|radius|否|这个参数设置的是完整圆环节的尺寸.默认100|
+|tube|否|这个参数设置的是圆环节截面的半径.默认是40.|
+|radiusSegments|否|这个参数设置的是沿圆环节长度方向分成的段数.默认值为8.|
+|tubularSegments|否|这个参数设置的是沿圆环节宽度方向分成的段数.默认值为6.|
+|p|否|该属性定义圆环结其轴线旋转的频率,默认值为2.|
+|q|否|该属性定义圆环结绕其内部缠绕多少次.默认值为3.|
+|heightScale|否|通过这个属性,可以拉伸这个圆环节.默认值为1|
+
+
+## THREE.PolyhedronGeometry (多面体)
+
+使用这个几何体,可以很容易的创建多面体.多面体是只有平面和直边的几何体.
+但多数情况下,你不会直接使用这个几何体. 后面几个案例可以直接使用这些特定的几何体.
+如果你想直接使用THREE.PolyhedronGeometry,必须指定给个顶点和面.
+
+```jsx title='chapter-05/03-basic-3d-geometries-polyhedron.jsx'
+const verticesOfCube = [
+    1, 1, 1,
+    -1,-1,1,
+    -1,1,-1,
+    1,-1,-1
+];
+
+const indicesOfFaces = [
+    2, 1, 0,
+    0, 3, 2,
+    1, 3, 0,
+    2, 3, 1
+];
+```
+
+import { Scene as SceneB } from './03b-basic-3d-geometries-polyhedron.jsx';
+
+<SceneB />
+
+<br/>
+
+为了创建THREE.PolyhedronGeometry,我们传入vertices,indices,radius和detail属性.
+
+|属性|是否必须|描述|
+|---|---|---|
+|vertices|是|该属性设置构成多面体的顶点|
+|indices|是|该属性设置vertices创建出的面|
+|radius|否|该属性指定多面体的大小,默认值1|
+|detail|否|通过这个属性,可以给这个多面体添加额外的细节.如果设置1,这个多面体上的每个三角都会分成3个小三角.如果设置为2,那4个小三角中的每个将会继续分成4个小三角.以此类推.|
+
+
+## THREE.IcosahedronGeometry (二十面体)
+
+THREE.IcosahedronGeometry 可以创建一个有20个相同的三角形面的多面体, 这些三角形面是从12个顶点创建出来.
+创建这个多面体,只需要指定radius和detail的值.
+
+## THREE.TetraHedronGeometry (正四面体)
+
+是最简单的多面体,这个多面体只包含由4个顶点创建的4个三角形面. 和创建其他几何体一样只需要指定radius和detail值.
+
+
+## THREE.OctahedronGeometry (八面体)
+
+THree.js库还提供了实现八面体的方法. 顾名思义,这个多面体有8个面.这些面是从6个顶点创建出来的.
+
+## THREE.DodecahedronGeometry (十二面体)
+
+Three.js库提供的最后一个多面体是THREE.DodecahedronGeometry. 这个多面体有12个面.
+
+import { Scene as SceneC } from './03c-basic-3d-geometries-polyhedron.jsx';
+
+<SceneC />
+
+<br/>
+

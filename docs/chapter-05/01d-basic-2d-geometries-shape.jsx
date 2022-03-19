@@ -29,17 +29,49 @@ export function Scene()
         scene.add( mesh );
 
         const x = 0, y = 0;
-        const heartShape = new THREE.Shape();
 
-        heartShape.moveTo( x + 5, y + 5 );
-        heartShape.bezierCurveTo( x + 5, y + 5, x + 4, y, x, y );
-        heartShape.bezierCurveTo( x - 6, y, x - 6, y + 7, x - 6, y + 7 );
-        heartShape.bezierCurveTo( x - 6, y + 11, x - 3, y + 15.4, x + 5, y + 19 );
-        heartShape.bezierCurveTo( x + 12, y + 15.4, x + 16, y + 11, x + 16, y + 7 );
-        heartShape.bezierCurveTo( x + 16, y + 7, x + 16, y, x + 10, y );
-        heartShape.bezierCurveTo( x + 7, y, x + 5, y + 5, x + 5, y + 5 );
+        function drawShape() {
 
+            // create a basic shape
+            var shape = new THREE.Shape();
 
+            // startpoint
+            shape.moveTo(10, 10);
+
+            // straight line upwards
+            shape.lineTo(10, 40);
+
+            // the top of the figure, curve to the right
+            shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
+
+            // spline back down
+            shape.splineThru(
+                    [new THREE.Vector2(32, 30),
+                        new THREE.Vector2(28, 20),
+                        new THREE.Vector2(30, 10),
+                    ]);
+
+            // curve at the bottom
+            shape.quadraticCurveTo(20, 15, 10, 10);
+
+            // add 'eye' hole one
+            var hole1 = new THREE.Path();
+            hole1.absellipse(16, 24, 2, 3, 0, Math.PI * 2, true);
+            shape.holes.push(hole1);
+
+            // add 'eye hole 2'
+            var hole2 = new THREE.Path();
+            hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
+            shape.holes.push(hole2);
+
+            // add 'mouth'
+            var hole3 = new THREE.Path();
+            hole3.absarc(20, 16, 2, 0, Math.PI, true);
+            shape.holes.push(hole3);
+
+            // return the shape
+            return shape;
+        }
 
         const data = {
             segments: 12
@@ -47,7 +79,7 @@ export function Scene()
 
         function generateGeometry() {
 
-            const geometry = new THREE.ShapeGeometry( heartShape, data.segments );
+            const geometry = new THREE.ShapeGeometry( drawShape(), data.segments );
             geometry.center();
 
             updateGroupGeometry( mesh, geometry );

@@ -113,8 +113,67 @@ let ring = new THREE.RingGeometry();
 
 ## THREE.Shape(自定形状几何体)
 
+THREE.PlaneGeometry 和 THREE.CircleGeometry 只有有限的方法来定制它们的外观,如果你想创建一个自定义的二维图形,可以使用THREE.ShapeGeometry.
+
 import { Scene as SceneD } from './01d-basic-2d-geometries-shape.jsx';
 
 <SceneD />
 
 <br/>
+
+先看下创建这个图形的的代码.
+
+```jsx title='chapter-05/01d-basic-2d-geometries-shape.jsx'
+ function drawShape() {
+
+    // create a basic shape
+    var shape = new THREE.Shape();
+
+    // startpoint
+    shape.moveTo(10, 10);
+
+    // straight line upwards
+    shape.lineTo(10, 40);
+
+    // the top of the figure, curve to the right
+    shape.bezierCurveTo(15, 25, 25, 25, 30, 40);
+
+    // spline back down
+    shape.splineThru(
+            [new THREE.Vector2(32, 30),
+                new THREE.Vector2(28, 20),
+                new THREE.Vector2(30, 10),
+            ]);
+
+    // curve at the bottom
+    shape.quadraticCurveTo(20, 15, 10, 10);
+
+    // add 'eye' hole one
+    var hole1 = new THREE.Path();
+    hole1.absellipse(16, 24, 2, 3, 0, Math.PI * 2, true);
+    shape.holes.push(hole1);
+
+    // add 'eye hole 2'
+    var hole2 = new THREE.Path();
+    hole2.absellipse(23, 24, 2, 3, 0, Math.PI * 2, true);
+    shape.holes.push(hole2);
+
+    // add 'mouth'
+    var hole3 = new THREE.Path();
+    hole3.absarc(20, 16, 2, 0, Math.PI, true);
+    shape.holes.push(hole3);
+
+    // return the shape
+    return shape;
+}
+```
+
+这段代码里, 你可以看到我们使用的线条(line),曲线(curve)和样条曲线(spline)创建了此图形的轮廓.
+然后我们使用THREE.Shape对象的holes属性给这个图形打了几个孔.
+
+要创建THREE.ShapeGeometry几何体,需要把THREE.Shape作为参数传递给THREE.ShapeGeometry
+
+```jsx
+new THREE.ShapeGeometry(drawShape());
+```
+
