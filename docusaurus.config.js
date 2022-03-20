@@ -59,7 +59,11 @@ const config = {
             label:'Three.js Docs',
             position:'left',
             items:[
-              {to:'/three.js-r133/docs/index.html',label:'Three.js r133 Docs'},
+              {
+                to:'/three.js-r133/docs/index.html',
+                label:'Three.js r133 Docs',
+                target: '_blank',
+              },
               {
                 href:'https://threejs.org/docs/index.html',
                 label:'Three.js Docs Online',
@@ -75,7 +79,7 @@ const config = {
         ],
       },
       footer: {
-        style: 'dark',
+        style: 'light',
         links: [
           {
             title: 'Docs',
@@ -114,7 +118,7 @@ const config = {
             ],
           },
         ],
-        copyright: `Copyright © ${new Date().getFullYear()} learning-threejs.happtim.com. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} happtim.com .Built with Docusaurus.<br/>晋ICP备2022001995`,
       },
       prism: {
         theme: lightCodeTheme,
