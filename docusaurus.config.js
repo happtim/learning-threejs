@@ -54,6 +54,18 @@ const config = {
             position: 'left',
             label: '学习 Three.js',
           },
+          {
+            type:'dropdown',
+            label:'Three.js Docs',
+            position:'left',
+            items:[
+              {to:'/three.js-r133/docs/',label:'Three.js r133 Docs'},
+              {
+                href:'https://threejs.org/docs/index.html',
+                label:'Three.js Docs Online',
+              }
+            ]
+          },
           {to: '/blog', label: 'Blog', position: 'left'},
           {
             href: 'https://github.com/happtim/learning-threejs',
