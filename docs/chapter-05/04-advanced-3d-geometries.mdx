@@ -1,0 +1,112 @@
+---
+    title: '高级几何体'
+---
+
+除了这些基础几何体,Three.js库还提供了一些比较高级而且特别的对象.本章我们会展示这些高级几何体.
+
+## ConvexGeometry (凸包几何体)
+
+通过THREE.ConvexGeometry,我们可以围绕一组点创建一个凸包.所谓凸包就是包围这组点的最小图形.
+
+import { Scene } from './04a-advanced-3d-geometries-convex.jsx';
+
+<Scene />
+
+<br/>
+
+我们随机生成了一组点，然后在这组随机点的基础上创建了一个THREE.ConvexGeometry对象。你可以在这个例子中点击redraw（重新绘制）按钮，这将生成20个新的随机点并且绘制凸包。
+为了能更好的观察这些点,我们使用THERE.SphereGeometry在每个点的位置上生成了一个小球体.
+
+:::info
+Three.js的标准版本版本中不包含HTREE.ConvexGeometry, 必须引用jsm目录下模块才可以使用.
+
+```jsx
+import { ConvexGeometry } from 'three/examples/jsm/geometries/ConvexGeometry'
+```
+:::
+
+下面代码展示了如果创建这些点如果创建并添加到场景中.
+
+```jsx title='chapter-05/04-advanced-3d-geometries-convex.jsx'
+function generatePoints() {
+    // add 10 random spheres
+    var points = [];
+    for (var i = 0; i < 20; i++) {
+        var randomX = -15 + Math.round(Math.random() * 30);
+        var randomY = -15 + Math.round(Math.random() * 30);
+        var randomZ = -15 + Math.round(Math.random() * 30);
+
+        points.push(new THREE.Vector3(randomX, randomY, randomZ));
+    }
+
+    spGroup = new THREE.Group();
+    var material = new THREE.MeshBasicMaterial({color: 0xff0000, transparent: false});
+    points.forEach(function (point) {
+
+        var spGeom = new THREE.SphereGeometry(0.2);
+        var spMesh = new THREE.Mesh(spGeom, material);
+        spMesh.position.copy(point);
+        spGroup.add(spMesh);
+    });
+    // add the points as a group to the scene
+    scene.add(spGroup);
+
+    // use the same points to create a convexgeometry
+    updateGroupGeometry(mesh,new ConvexGeometry(points));
+}
+```
+
+这段代码中看到的.我们创建了20个随机点(THREE.Vector3),并保存在一个数组中.
+然后遍历这个数组,为每个元素创建THREE.SphereGeometry.所有生成的点被添加到一个组中.方便轻松的旋转.
+
+创建一个THREE.ConvexGeometry很简单,构造函数接受一个顶点数组.
+
+```jsx
+new ConvexGeometry(points);
+```
+
+## THREE.LatheGeometry
+
+THREE.LatheGeometry允许你从一条光滑曲线创建图形。此曲线是由多个点（也称为节点）定义的，通常称作样条曲线。这条样条曲线绕物体的中心z轴旋转，得到类似花瓶或铃铛的图形。
+
+import { Scene as SceneB } from './04b-advanced-3d-geometries-lathe.jsx';
+
+<SceneB />
+
+<br/>
+
+你可以看到我们生成了10个点,这些点的x坐标由正弦函数决定,y坐标基于变量i.通过这些点即可创建出样条曲线
+
+```jsx title='chapter-05/04b-advanced-3d-geometries-lathe.jsx'
+const points = [];
+
+for ( let i = 0; i < 10; i ++ ) {
+
+    points.push( new THREE.Vector2( Math.sin( i * 0.2 ) * 10 + 5, ( i - 5 ) * 2 ) );
+
+}
+
+const data = {
+    segments: 12,
+    phiStart: 0,
+    phiLength: twoPi
+};
+
+function generateGeometry() {
+
+    const geometry = new THREE.LatheGeometry(
+        points, data.segments, data.phiStart, data.phiLength
+    );
+
+    updateGroupGeometry( mesh, geometry );
+
+}
+```
+
+基于这些点我们就可以创建THREE.LatheGeometry。除了这个顶点数组，THREE.LatheGeometry还接受其他几个参数。
+
+|属性|是否必需|描述|
+|points|是|该属性指定构成样条曲线的点,然后基于这个样条曲线生成类似围绕图形|
+|segments|否|该属性指定创建图形时所有的分段数目.这个数值越高,最终的图形越圆.默认值为12.|
+|phiStart|否|该属性指定创建图形时从圆的何处开始.取值范围是0到2*PI.默认值为0.|
+|phiLength|否|该属性指定创建的图形有多完整.例如四分之一图形就是0.5*PI.默认值为完整360度或者2*PI.|
