@@ -59,7 +59,7 @@ const config = {
             label:'Three.js Docs',
             position:'left',
             items:[
-              {to:'/three.js-r133/docs/',label:'Three.js r133 Docs'},
+              {to:'/three.js-r133/docs/index.html',label:'Three.js r133 Docs'},
               {
                 href:'https://threejs.org/docs/index.html',
                 label:'Three.js Docs Online',
