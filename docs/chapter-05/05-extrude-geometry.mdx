@@ -1,0 +1,89 @@
+---
+    title : '通过拉伸创建几何体'
+---
+
+Three.js提供了几种方法，让我们可以从一个二维图形拉伸出三维图形。拉伸指的是沿着z轴拉伸二维图形，将它转换成三维图形。
+
+
+## THREE.ExtrudeGeometry (拉伸几何体)
+
+在这个例子中我们使用上一章的二维图片,并用THREE.ExtrudeGeometry将它转换为三位图形
+
+import { Scene } from './05a-extrude-geometry.jsx';
+
+<Scene />
+
+<br/>
+
+创建THREE.ExtrudeGeometry的代码很简单
+
+```jsx
+const data = {
+    amount : 2,
+    bevelThickness : 2,
+    bevelSize : 0.5,
+    bevelEnabled : true,
+    bevelSegments : 3,
+    bevelEnabled : true,
+    curveSegments : 12,
+    steps : 1,
+};
+
+function generateGeometry() {
+    const geometry = new THREE.ExtrudeGeometry(drawShape(),data);
+    geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-20, -10, 0));
+    updateGroupGeometry(mesh,geometry);
+}
+```
+
+drawShape()函数创建一个自定义图形,然后连同options传入THREE.ExtrudeGeometry.
+参数的各个选项为:
+
+|属性|是否必需|描述|
+|---|---|---|
+|shapes|是|拉伸几何体需要提供一个或者多个图形(THREE.Shape对象)|
+|amount|否|该属性指定图形可以拉多高(深度)|
+|bevelThickness|否|该属性指定斜角的深度.斜角是前后面和拉伸之间的倒角.|
+|bevelSize|否|该属性指定斜角的高度.这个高度将被加到图形的正常高度上.|
+|bevelSegments|否|该属性定义斜角的分段数.分段越多,斜角越平滑.|
+|bevelEnabled|否|如果这个属性设为true,就会有斜角.默认为true|
+|curveSegments|否|该属性指定拉伸图形时曲线分成多少段.分段数越多,曲线越平滑.|
+|steps|否|该属性指定拉伸体沿深度方向分成多少段.|
+|extrudePath|否|该属性指定图形沿着什么路径(THREE.CurvePath)拉伸,没有没有指定,沿着z轴拉伸.|
+|uvGenerator|否|当你给材质使用纹理时,UV映射确定纹理的哪一部分用于特定的面.使用uvGenerator属性,你可以传入自己对象,该对象将为传入的图形创建的面创建UV设置.|
+
+## THREE.TubeGeometry ()
+
+THREE.TubeGeometry 沿着一条三维的样条曲线拉伸出一根管.你可以通过指定一些顶点来定义路径.
+
+import { Scene as SceneB } from './05b-extrude-tube.jsx';
+
+<SceneB />
+
+<br/>
+
+我们随机的生成一些点,然后用这些点来绘制管线.创建管线的代码很简单.
+
+```jsx
+var points = [];
+for (var i = 0; i < controls.numberOfPoints; i++) {
+    var randomX = -20 + Math.round(Math.random() * 50);
+    var randomY = -15 + Math.round(Math.random() * 40);
+    var randomZ = -20 + Math.round(Math.random() * 40);
+
+    points.push(new THREE.Vector3(randomX, randomY, randomZ));
+}
+// use the same points to create a convexgeometry
+var tubeGeometry = new THREE.TubeGeometry(new THREE.CatmullRomCurve3(points), segments, radius, radiusSegments, closed);
+```
+
+我们首先要做的时获取一组THREE.Vector3类型的顶点,在使用这些点前转化成THREE.CatmullRomCurve3对象.
+THREE.TubeGeometry还支持一些其他的参数.
+
+|属性|是否必需|描述|
+|---|---|---|
+|path|是|该属性用一个THREE.SplineCurve3对象来指定管应当遵循的路径|
+|segments|否|该属性指定构建这个管所用的分段数.路径越长,指定的分段数应该越多|
+|radius|否|该属性指定管的半径,默认为1|
+|radiusSegments|否|该属性指定管圆周的分段数.默认值为8.分段数越多,管越圆.|
+|closed|否|该属性指定是否管头尾会连起来.默认为false|
