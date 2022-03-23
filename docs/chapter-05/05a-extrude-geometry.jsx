@@ -30,11 +30,11 @@ export function Scene()
         const twoPi = Math.PI * 2;
 
         // show axes in the screen
-        var axes = new THREE.AxisHelper(20);
+        var axes = new THREE.AxesHelper(20);
         scene.add(axes);
 
         const data = {
-            amount : 2,
+            depth : 2,
             bevelThickness : 2,
             bevelSize : 0.5,
             bevelEnabled : true,
@@ -47,13 +47,13 @@ export function Scene()
         function generateGeometry() {
 
             const geometry = new THREE.ExtrudeGeometry(drawShape(),data);
-            geometry.applyMatrix(new THREE.Matrix4().makeTranslation(-20, -10, 0));
+            geometry.applyMatrix4(new THREE.Matrix4().makeTranslation(-20, -10, 0));
             updateGroupGeometry(mesh,geometry);
         }
 
         const folder = gui.addFolder( 'THREE.LatheGeometry' );
 
-        folder.add(data, 'amount', 0, 20).onChange(generateGeometry);
+        folder.add(data, 'depth', 0, 20).onChange(generateGeometry);
         folder.add(data, 'bevelThickness', 0, 10).onChange(generateGeometry);
         folder.add(data, 'bevelSize', 0, 10).onChange(generateGeometry);
         folder.add(data, 'bevelSegments', 0, 30).step(1).onChange(generateGeometry);
