@@ -24,12 +24,12 @@ const config = {
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
-          editUrl: 'https://github.com/happtim/learning-threejs',
+          editUrl: 'https://github.com/happtim/learning-threejs/blob/main/',
         },
         blog: {
           showReadingTime: true,
           // Please change this to your repo.
-          editUrl: 'https://github.com/happtim/learning-threejs',
+          editUrl: 'https://github.com/happtim/learning-threejs/blob/main/',
         },
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
