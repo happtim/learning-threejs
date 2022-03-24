@@ -1,0 +1,67 @@
+---
+    title: '等式几何体'
+---
+
+通过THREE.ParametricGeometry,你可以创建基于等式的几何体.Three.js提供了一些例子.
+我们可以在 examples/jsm/ParametricGeometries.js 文件中找到几个公式的例子.
+
+```jsx title='three/examples/jsm/ParametricGeometries.js'
+plane: function ( width, height ) {
+
+    return function ( u, v, target ) {
+
+        const x = u * width;
+        const y = 0;
+        const z = v * height;
+
+        target.set( x, y, z );
+
+    };
+
+},
+```
+THREE.ParametricGeometry会调用这个函数。u和v的取值范围从0到1，而且针对0到1之间的所有值该函数还会被调用很多次。
+在这个例子里，u值用来确定向量的x坐标，v值用来确定z坐标。当这个函数被调用时，你就会得到一个宽为width、深为depth的基础平面。
+
+下面的例子创建的是一个波浪的图形.
+
+import { Scene } from './06-parametric-geometries.jsx';
+
+<Scene />
+
+<br/>
+
+要创建这样的图形,我们需要将如下参数传递给 `THREE.ParametricGeometry` 
+
+```jsx title=''
+var radialWave = function (u, v, target) {
+    var r = 50;
+
+    var x = Math.sin(u) * r;
+    var z = Math.sin(v / 2) * 2 * r;
+    var y = (Math.sin(u * 4 * Math.PI) + Math.cos(v * 2 * Math.PI)) * 2.8;
+
+    return target.set (x, y, z);
+};
+```
+
+我们传递给 `THREE.ParametricGeometry` 的参数有:
+
+|属性|是否必需|描述|
+|function|是|该属性是一个函数,该函数以u,v值作为参数来定义每个项点的位置|
+|slices|是|该属性定义u值应该分成多少份|
+|stacks|是|该属性定义v值应该分成多少份|
+
+我们曾提到过u,v属性将会传递给由function属性指定的函数. 并且这两个属性的取值范围是从0到1的.
+通过slices和stacks属性,我们可以指定传入的function函数的调用频率.
+由此可知,值越大,生成的顶点越多,创建出来的几何体越平滑.
+
+可以参考 `Thress.js` 发布包里面的 `example/jsm/Geometries/ParametricGeometryies.js` 文件查看更多例子:
+
+* 勒莱因瓶
+* 平面
+* 二维莫比乌斯带
+* 三位莫比乌斯带
+* 管
+* 环状纽节
+* 球体
