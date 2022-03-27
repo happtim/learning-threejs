@@ -1,0 +1,104 @@
+---
+    title : '创建三维文字'
+---
+
+## 渲染文字
+
+在Three.js中渲染文本非常简单.只需要准备好字体,然后使用 `THREE.TextGeometry` 创建三维文字. 他的属性类似 `THREE.ExtrudeGeometry`
+
+import { Scene } from './07-text-geometry.jsx';
+
+<Scene />
+
+<br/>
+
+创建三维文字的代码:
+
+```jsx title='chapter05/07-text-geometry.jsx'
+import HelvetikerFont  from 'three/examples/fonts/helvetiker_regular.typeface.json';
+...
+const loader = new FontLoader();
+let helvetiker_regular_font = loader.parse(HelvetikerFont);
+
+let gentilis_font;
+loader.load( '/assets/fonts/gentilis_regular.typeface.json' ,function(font){
+
+    gentilis_font = font;
+    generateGeometry();
+    render();
+});
+
+const data = {
+    size : 90,
+    height : 10,
+    bevelThickness : 2,
+    bevelSize : 0.5,
+    bevelEnabled : true,
+    bevelSegments : 3,
+    bevelEnabled : true,
+    curveSegments : 12,
+    steps : 1,
+    fontSelect : "helvetiker",
+    weight : "normal",
+};
+
+function generateGeometry() {
+
+    switch (data.fontSelect){
+        case 'helvetiker':
+            data.font = helvetiker_regular_font;
+            break;
+        case 'gentilis':
+            data.font = gentilis_font;
+            break;
+    }
+    const geometry = new TextGeometry('Three.js', data);
+    mesh.scale.x = 0.1;
+    mesh.scale.y = 0.1;
+    updateGroupGeometry(mesh,geometry);
+}
+```
+
+首先使用Three.js提供的 `THREE.FontLoader` 加载字体. 我们使用了两种方式加载字体. 第一种使用parse Json的方式获取 `THREE.Font`
+第二种方式使用load字体资源的方式, 在调用load()方法时,它还提供了一个回调函数,用于接收创建好的字体对象,
+然后将字体对象保存在变量中,并调用render()用来绘制场景.
+
+我们将字体赋值到准备的data中, 并用data作为参数创建 `THREE.TextGeometry` 对象. 
+大部分传给 `THREE.TextGeometry` 的参数与 `THREE.ExtrudeGeometry` 相同. 下面表格列出来选项.
+
+|属性|是否必需|描述|
+|---|---|---|
+|font|是|该属性指定要用的字体名|
+|size|否|该属性指定文本的大小.|
+|height|否|该属性指定拉伸的长度(深度).|
+|bevelThickness|否|该属性指定斜角的深度.斜角是前后面和拉伸之间的倒角.|
+|bevelSize|否|该属性指定斜角的高度.这个高度将被加到图形的正常高度上.|
+|bevelSegments|否|该属性定义斜角的分段数.分段越多,斜角越平滑.|
+|bevelEnabled|否|如果这个属性设为true,就会有斜角.默认为true|
+|curveSegments|否|该属性指定拉伸图形时曲线分成多少段.分段数越多,曲线越平滑.|
+|steps|否|该属性指定拉伸体沿深度方向分成多少段.|
+|extrudePath|否|该属性指定图形沿着什么路径(THREE.CurvePath)拉伸,没有没有指定,沿着z轴拉伸.|
+|uvGenerator|否|当你给材质使用纹理时,UV映射确定纹理的哪一部分用于特定的面.使用uvGenerator属性,你可以传入自己对象,该对象将为传入的图形创建的面创建UV设置.|
+
+由于 `THREE.TextGeometry` 是基于 `THREE.ExtrudeGeometry` 类的扩展, 因此可以为字体形体的正面和侧面指定不同的材质.
+如果向字体对象提供包含两个材质的数组,则数组中的第一个材质会被用于字体的正面,第二个材质则被用于侧面.
+
+:::info
+如果你想渲染二维文字并用作材质的纹理，那么你就不应该使用THREE.TextGeometry。THREE.TextGeometry在内部使用THREE.ExtrudeGeometry构建三维文本，并且JavaScript字体引入了大量开销。渲染一个简单的二维字体，使用HTML5画布会更好。通过context.font，可以设置要使用的字体，通过context.fillText，可以将文本输出到画布。
+:::
+
+## 添加自定义字体
+
+Three.js提供了几种可以场景中使用的字体,这些字体基于TypeFace.js库提供的字体.
+TypeFace.js库可以将TrueType和OpenType字体转化成JavaScript文件或者Json文件,以便在网页中的JavaScript程序中直接使用.
+
+可以访问 [https://gero3.github.io/facetype.js](https://gero3.github.io/facetype.js) 在线转化所需要的TrueType和OpenType字体.
+
+在网页中,你可以上传一个字体并将它转换为JSON文件。请注意，并不是所有类型的字体都适用。在Three.js中使用时，字体越简单（直线更多），越容易被正确地渲染。在转换结果文件中，每一个字符都被描述为一段代码，看起来像下面这样：
+
+```json
+{"glyphs":{"ợ":{"x_min":44,"x_max":818,"ha":817,"o":"m 514 298 q 502 400 514 352 q 471 485 491 448 q 422 544 451 522 q 358 566 393 566 q 289 547 316 566 q 245 495 261 528 q 222 418 228 463 q 216 320 216 373 q 228 220 216 267 q 262 139 241 174 q 311 84 283 104 q 371 65 339 65 q 438 80 411 65 q 482 125 465 96 q 506 199 499 155 q 514 298 514 242 m 818 706 q 774 611 818 663 q 637 509 730 559 q 672 425 660 471 q 685 329 685 380 q 672 240 685 283 q 638 158 660 196 q 585 86 616 119 q 518 30 555 53 q 439 -6 481 6 q 351 -20 396 -20 q 225 4 282 -20 q 128 71 168 28 q 66 173 88 114 q 44 301 44 232 q 68 431 44 368 q 138 543 93 494 q 243 621 182 592 q 378 651 305 651 q 498 629 444 651 q 592 568 552 607 q 630 613 621 591 q 640 652 640 635 q 627 689 640 671 q 595 722 614 706 l 772 802 q 804 761 791 787 q 
+...
+```
+
+转换得到JSON文件后，你可以使用THREE.FontLoader（就像我们在前面展示过的那样）加载字体，并将字体对象赋给THREE.TextGeometry的font属性。
