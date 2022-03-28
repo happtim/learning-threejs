@@ -1,0 +1,93 @@
+---
+    title: '使用二元操作组合网格'
+---
+
+，我们将向你展示如何将各种标准几何体组合在一起创建出新的几何体,
+一种被称为构造实体几何体(Constructive Solid Geometry) CSG的技术,为此我们引入了Three.js的扩展库 three-csg-bevelThickness
+我们可以在github上找到这个库. [https://github.com/Jiro-Digital/three-csg-ts](https://github.com/Jiro-Digital/three-csg-ts)
+这个扩展库提供了如下的函数:
+
+|名称|描述|
+|intersect(相交)|使用该函数可以基于两个现有几何体的交集创建出新的几何体,两个几何体重叠部分定义此新的几何体的形状|
+|union(联合)|使用该函数可以将两个几何体联合起来创建出一个新的几何体|
+|subtract(相减)|subtract函数和union函数相反,通过这个函数可以在第一个几何体中移除第二个几何体重叠的部分来创建新的几何体.|
+
+
+import { Scene } from './08-binary-operations.jsx';
+
+<Scene />
+
+<br/>
+
+
+## subtract函数
+
+:::info
+这三个函数在计算时使用的是网格的绝对位置，所以如果你在应用这些函数之前将网格组合在一起或是使用多种材质，你可能会得到一些奇怪的结果。为了得到最好的、可预测的结果，应当确保使用的是未经组合的网格。
+:::
+
+该场景中共有三个线框：一个方块和两个球体。Sphere1是中间的那个球体，所有操作都会在这个对象上执行；Sphere2是右边的那个球体，而Cube是左边的方块。在Sphere2和Cube上你可以指定四种操作中的一种：subtract、union、intersect和none（无操作）。这些操作都是基于Sphere1的。
+当我们把Sphere2的操作设为subtract并选择showResult（和隐藏线框），显示结果将是Sphere1减去Sphere1和Sphere2重叠的区域。
+
+完成相减的代码很简单:
+
+```jsx title='chapter-05/08-binary-operations.jsx'
+function redrawResult() {
+
+    var result;
+    // make the call async to avoid blocking the thread. Need
+    // to set timeout > 1, if not executed immediately.
+    setTimeout(function () {
+
+        // first do the sphere
+        switch (controls.actionSphere) {
+            case "subtract":
+                result = CSG.subtract(sphere1,sphere2);
+                break;
+            case "intersect":
+                result= CSG.intersect(sphere1,sphere2);
+                break;
+            case "union":
+                result= CSG.union(sphere1,sphere2);
+                break;
+            case "none": // noop;
+        }
+
+        // next do the cube
+        if (!result) result= sphere1;
+        switch (controls.actionCube) {
+            case "subtract":
+                result= CSG.subtract(cube,result);
+                break;
+            case "intersect":
+                result= CSG.intersect(cube,result);
+                break;
+            case "union":
+                result= CSG.union(cube,result);
+                break;
+            case "none": // noop;
+        }
+
+        if (controls.actionCube === "none" && controls.actionSphere === "none") {
+            // do nothing
+        } else {
+            console.log(result);
+            updateGroupGeometry(mesh,result.geometry);
+            mesh.position.copy(result.position);
+        }
+
+    }, 200);
+}
+```
+
+这段代码中我们直接使用CSG,先将sphere1 和 sphere2 进行二元操作. 然后使用cube再和前面的计算结果再次二元计算.
+得到最终的结果,并将结果绘制出来.
+
+## intersect函数
+
+只有网格重叠的部分会保留下来.这些操作可以应用到你创建的每个网格上,包括那些我们在本章看过的复杂网格,例如THREE.ParamericGeometry和THREE.TextGeometry.
+
+## union 函数
+
+通过这个函数,我们可以将两个网格连成一体,从而创建出一个新的几何体.当我们将这个函数应用于两个球体和一个方块时,我们将得到一个单一的物体.
+这并不是很有用,因为Three.js自己也提供了这个功能(THREE.Geometry.merge),而且性能更好.如果旋转物体,你会发现这个联合操作应用在中间那个球上,因为旋转的中心就是那个球的球心.

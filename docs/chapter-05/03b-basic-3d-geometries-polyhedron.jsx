@@ -52,8 +52,6 @@ export function Scene()
 
         function generateGeometry() {
 
-            console.log(data);
-
             updateGroupGeometry( mesh,
                 new THREE.PolyhedronGeometry( verticesOfCube, indicesOfFaces, data.radius, data.detail )
             );

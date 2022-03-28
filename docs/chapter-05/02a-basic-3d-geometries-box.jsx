@@ -34,7 +34,7 @@ export function Scene()
         const data = {
             width: 15,
             height: 15,
-            depth: 15,
+            depth: 16,
             widthSegments: 1,
             heightSegments: 1,
             depthSegments: 1

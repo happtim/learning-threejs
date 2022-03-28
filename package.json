@@ -1,6 +1,6 @@
 {
   "name": "learning-threejs",
-  "version": "0.0.1", 
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "docusaurus": "docusaurus",
@@ -22,6 +22,7 @@
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
     "three": "^0.133.0",
+    "three-csg-ts": "^3.1.10",
     "three-spritetext": "^1.6.4"
   },
   "browserslist": {
