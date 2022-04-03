@@ -1,0 +1,146 @@
+---
+    title: '使用HTML5画布样式化粒子'
+---
+
+到目前为止,我们只是把粒子渲染成小方块,这是默认的行为,还有一些其其他的样式化粒子的方式:
+
+* 可是使用 `THREE.SpriteMaterial` 渲染HTML画布的元素
+* 使用 `THREE.PointsMaterial` 的map属性,加载外部图片文件(或使用HTML5画布)来样式化 `THREE.Points` 对象中的所有粒子.
+
+
+
+## THREE.PointsMaterial 方式
+
+在讲解 `THREE.PointsMaterial` 的属性时,我们提过map属性, 通过map属性,我们可以为粒子加载纹理.
+在*THREE.js*中,纹理也可以是HTML5画布的输出.
+
+import { Scene as SceneB } from './03b-program-based-points.jsx';
+
+<SceneB />
+
+<br/>
+
+大部分代码和之前类似, 该例子最重要的改变是下面:
+
+```jsx title='chapter-07/03-program-based-points.jsx'
+var getTexture = function () {
+    var canvas = document.createElement('canvas');
+    canvas.width = 32;
+    canvas.height = 32;
+
+    var ctx = canvas.getContext('2d');
+    // the body
+    ctx.translate(-81, -84);
+
+    ctx.fillStyle = "orange";
+    ctx.beginPath();
+    ctx.moveTo(83, 116);
+    ctx.lineTo(83, 102);
+    ctx.bezierCurveTo(83, 94, 89, 88, 97, 88);
+    ctx.bezierCurveTo(105, 88, 111, 94, 111, 102);
+    ctx.lineTo(111, 116);
+    ctx.lineTo(106.333, 111.333);
+    ctx.lineTo(101.666, 116);
+    ctx.lineTo(97, 111.333);
+    ctx.lineTo(92.333, 116);
+    ctx.lineTo(87.666, 111.333);
+    ctx.lineTo(83, 116);
+    ctx.fill();
+
+    // the eyes
+    ctx.fillStyle = "white";
+    ctx.beginPath();
+    ctx.moveTo(91, 96);
+    ctx.bezierCurveTo(88, 96, 87, 99, 87, 101);
+    ctx.bezierCurveTo(87, 103, 88, 106, 91, 106);
+    ctx.bezierCurveTo(94, 106, 95, 103, 95, 101);
+    ctx.bezierCurveTo(95, 99, 94, 96, 91, 96);
+    ctx.moveTo(103, 96);
+    ctx.bezierCurveTo(100, 96, 99, 99, 99, 101);
+    ctx.bezierCurveTo(99, 103, 100, 106, 103, 106);
+    ctx.bezierCurveTo(106, 106, 107, 103, 107, 101);
+    ctx.bezierCurveTo(107, 99, 106, 96, 103, 96);
+    ctx.fill();
+
+    // the pupils
+    ctx.fillStyle = "blue";
+    ctx.beginPath();
+    ctx.arc(101, 102, 2, 0, Math.PI * 2, true);
+    ctx.fill();
+    ctx.beginPath();
+    ctx.arc(89, 102, 2, 0, Math.PI * 2, true);
+    ctx.fill();
+
+
+    var texture = new THREE.Texture(canvas);
+    texture.needsUpdate = true;
+    return texture;
+};
+
+function createPointCloud(size, transparent, opacity, sizeAttenuation, color) {
+
+    var geom = new THREE.BufferGeometry();
+
+    var material = new THREE.PointsMaterial({
+        size: size,
+        transparent: transparent,
+        opacity: opacity,
+        map: getTexture(),
+        sizeAttenuation: sizeAttenuation,
+        color: color,
+    });
+
+
+    var points = [];
+    var range = 500;
+    for (var i = 0; i < 5000; i++) {
+        var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range - range / 2, Math.random() * range - range / 2);
+        points.push(particle);
+    }
+
+    geom.setFromPoints(points);
+
+    cloud = new THREE.Points(geom, material);
+    cloud.name = 'pointcloud';
+    cloud.sortParticles = true;
+    scene.add(cloud);
+}
+```
+
+在这两个Javascript函数中, 第一个函数基于HTML5画布元素创建一个 `THREE.Texture` 对象.
+第二个函数(createPointCloud),我们将这个纹理赋值给 `THREE.PointsMaterial` 的map属性.
+这样就将绘制的纹理应用到 `THREE.Points` 中的粒子上了.
+
+:::info
+当你仔细观察本示例渲染的画面时，会发现当一些粒子重叠时，有时会有错误的透明效果。想要保证粒子不重叠，你将不得不自行实现排序功能，或者修改材质的alphaTest或depthWrite属性。
+:::
+
+
+## THREE.SpriteMaterial 方式
+
+在本节开头提过, 也可以使用 `THREE.Sprite` 和map属性类创建基于画布的粒子, 为此,
+我们使用相同的方法来创建 `THREE.Texture`.
+
+
+```jsx title='chapter-07/03a-program-based-sprites.jsx'
+function createSprites() {
+    var material = new THREE.SpriteMaterial({
+        map: getTexture(),
+        color: 0xffffff
+    });
+
+    var range = 500;
+    for (var i = 0; i < 1500; i++) {
+        var sprite = new THREE.Sprite(material);
+        sprite.position.set(Math.random() * range - range / 2, Math.random() * range - range / 2, Math.random() * range - range / 2);
+        sprite.scale.set(4, 4, 4);
+        scene.add(sprite);
+    }
+}
+```
+
+import { Scene } from './03a-program-based-sprites.jsx';
+
+<Scene />
+
+<br/>

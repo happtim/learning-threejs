@@ -1,0 +1,70 @@
+---
+    title: 'THREE.Points'
+---
+
+`THREE.Points` 的构造函数接受两个属性:几何体和材质.材质用来给粒子着色和添加纹理,而几何体用来指定粒子的位置.
+每个顶点用来定义几何体的点,将会以粒子的形态展示出来. 
+如果我们基于 `THREE.BoxGeometry` 对象创建 `THREE.Points` 对象, 我们将会得到8个粒子, 方块上的每个角一个点. 一般情况我们不会使用标准的 *THREE.js* 几何体来创建 `THREE.Points` ,而是从零开始手工将顶点添加到几何体上.
+
+import { Scene } from './02-basic-point-cloud.jsx';
+
+<Scene />
+
+<br/>
+
+在这个例子中,我们创建了一个 `THREE.Points` 对象,并添加了15000个粒子,所有这些粒子都用 `THREE.PointsMaterial`.
+
+```jsx title='chapter-07/02-basic-point-cloud.jsx'
+function createParticles(size, transparent, opacity, vertexColors, sizeAttenuation, color) {
+
+    var geom = new THREE.BufferGeometry();
+    var material = new THREE.PointsMaterial({
+        size: size,
+        transparent: transparent,
+        opacity: opacity,
+        vertexColors: vertexColors,
+
+        sizeAttenuation: sizeAttenuation,
+        color: color
+    });
+
+    var points = [];
+    var colors = [];
+    var range = 500;
+    for (var i = 0; i < 15000; i++) {
+        var particle = new THREE.Vector3(Math.random() * range - range / 2, Math.random() * range - range / 2, Math.random() * range - range / 2);
+        points.push(particle);
+
+        let targetColor = new THREE.Color();
+        var color = new THREE.Color(0x00ff00).getHSL(targetColor);
+        color.setHSL(targetColor.h, targetColor.s, Math.random() * targetColor.l);
+
+        colors.push(color.r, color.g, color.b);
+        //geom.colors.push(color);
+    }
+
+    geom.setFromPoints(points);
+    geom.setAttribute('color', new THREE.Float32BufferAttribute(colors ,3) )
+
+    cloud = new THREE.Points(geom, material);
+    cloud.name = "particles";
+    scene.add(cloud);
+}
+```
+
+在上面列出的代码里,我们首先创建了 `THREE.BufferGeometry` 对象. 然后我们会把用 `THREE.Vector3` 对象表示的粒子添加到这个几何体中. 
+我们使用了循环, 在循环中随机的位置上创建了 `THREE.Vector3` 对象,并将它添加到几何体中.
+我们还定义了一个颜色数组:color[] BufferGeometry中设置 color 属性会用到.
+
+下面是创建 `THREE.PointsMaterial` 可以设置的属性说明:
+
+|名称|描述|
+|---|---|
+|color|粒子系统中所有粒子的颜色.|
+|map|通过这个属性可以在粒子上应用某种材质.例如可以让粒子看起来像雪花.|
+|size|该属性指定粒子的大小|
+|sizeAnnutation|如果该属性设置为false,那么所有粒子都将拥有相同的尺寸,无论它们距离摄像机多远.如果设置true,粒子的大小取决于其距离摄像机的远近.|
+|opacity|该属性与transparent属性一起使用,用来设置粒子的不透明度.默认1,没有透明效果|
+|transparent|如果设置该属性为true,那么粒子在渲染会根据opacity属性的值来确定其透明度,默认为false|
+|blending|该属性指定渲染粒子的融合模式|
+|fog|该属性决定粒子是否受场景中的雾化效果,默认值为true|

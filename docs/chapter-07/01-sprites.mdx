@@ -1,0 +1,82 @@
+---
+    title: '理解粒子'
+---
+
+
+## THREE.Sprite (精灵)
+
+打开这个示例,可以看到一个白色方块矩阵组成的网格.
+你可以使用鼠标在场景中移动.在移动的过程中你会注意到,无论从那个角度观察,阵列中方块都没有变化.
+
+
+import { Scene } from './01a-sprites.jsx';
+
+<Scene />
+
+<br/>
+
+图中可以看到很多粒子,每个粒子永远面向摄像机二维平面.
+
+```jsx title='chapter-07/01-sprites.mdx'
+function createSprites() {
+    var material = new THREE.SpriteMaterial();
+
+
+    for (var x = -5; x < 5; x++) {
+        for (var y = -5; y < 5; y++) {
+            var sprite = new THREE.Sprite(material);
+            sprite.position.set(x * 10, y * 10, 0);
+            scene.add(sprite);
+        }
+    }
+        }
+```
+
+在这个列子中,我们使用 `THREE.Sprit` 构造函数手动创建粒子,我们传入的唯一参数是材质.
+
+`THREE.Sprit` 对象和 `THREE.Mesh` 一样都是 `THREE.Object3D` 对象的扩展. 
+也就是 `THREE.Mesh` 对象的大部分属性和函数都可以用于 `THREE.Sprite`. 你可以用 `position` 属性来定位,
+用 `scale` 属性进行缩放, 用 `translate` 属性指定相对位移.
+
+
+## THREE.Points (点)
+
+
+通过 `THREE.Sprite` 你可以非常容易地创建一组对象并在场景中移动它们. 当你使用少量对象时,这时没用问题的.
+但是当你想使用大量的 `THREE.Sprite` 对象时,你会很快遇到性能问题, 因为每个对象要分别由 *THREE.js* 进行管理.
+
+*THREE.js* 提供了另一种方式来处理大量的粒子, 这就需要使用 `THREE.Points`.  一个用于显示点的类。 由WebGLRenderer渲染的点使用 gl.POINTS.
+通过 `THREE.Points`, *THREE.js* 不再需要管理大量单个 `THREE.Sptrite` 对象发, 而只需要管理 `THREE.Points` 实例.
+
+```jsx title='chapter-07/01b-points.jsx'
+function createParticles() {
+
+    var geom = new THREE.BufferGeometry();
+    var material = new THREE.PointsMaterial({size: 4, vertexColors: true, color: 0xffffff});
+
+    var points  = [];
+    var colors = [];
+    for (var x = -5; x < 5; x++) {
+        for (var y = -5; y < 5; y++) {
+            var particle = new THREE.Vector3(x * 10, y * 10, 0);
+            points.push(particle);
+            var color = new THREE.Color(Math.random() * 0x00ffff);
+            colors.push(color.r,color.g, color.b);
+        }
+    }
+
+    geom.setFromPoints(points);
+    geom.setAttribute( 'color', new THREE.Float32BufferAttribute( colors, 3 ) );
+
+    var cloud = new THREE.Points(geom, material);
+    scene.add(cloud);
+}
+```
+我们需要为每个粒子创建一个顶点 (用 THREE.Vector3表示), 并将它添加到 `THREE.BufferGeometry` 然后使用 `THREE.PointsMaterial` 和  `THREE.BufferGeometry` 一起创建出 `THREE.Points`
+
+import { Scene as SceneB } from './01b-points.jsx';
+
+<SceneB />
+
+<br/>
+
