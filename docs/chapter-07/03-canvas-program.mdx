@@ -1,5 +1,5 @@
 ---
-    title: '使用HTML5画布样式化粒子'
+    title: '使用Canvas(画布)样式化粒子'
 ---
 
 到目前为止,我们只是把粒子渲染成小方块,这是默认的行为,还有一些其其他的样式化粒子的方式:
@@ -14,7 +14,7 @@
 在讲解 `THREE.PointsMaterial` 的属性时,我们提过map属性, 通过map属性,我们可以为粒子加载纹理.
 在*THREE.js*中,纹理也可以是HTML5画布的输出.
 
-import { Scene as SceneB } from './03b-program-based-points.jsx';
+import { Scene as SceneB } from './03b-canvas-points.jsx';
 
 <SceneB />
 
@@ -22,7 +22,7 @@ import { Scene as SceneB } from './03b-program-based-points.jsx';
 
 大部分代码和之前类似, 该例子最重要的改变是下面:
 
-```jsx title='chapter-07/03-program-based-points.jsx'
+```jsx title='chapter-07/03-canvas-points.jsx'
 var getTexture = function () {
     var canvas = document.createElement('canvas');
     canvas.width = 32;
@@ -122,7 +122,7 @@ function createPointCloud(size, transparent, opacity, sizeAttenuation, color) {
 我们使用相同的方法来创建 `THREE.Texture`.
 
 
-```jsx title='chapter-07/03a-program-based-sprites.jsx'
+```jsx title='chapter-07/03a-canvas-sprites.jsx'
 function createSprites() {
     var material = new THREE.SpriteMaterial({
         map: getTexture(),
@@ -139,7 +139,7 @@ function createSprites() {
 }
 ```
 
-import { Scene } from './03a-program-based-sprites.jsx';
+import { Scene } from './03a-canvas-sprites.jsx';
 
 <Scene />
 

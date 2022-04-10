@@ -6,7 +6,7 @@
 每个顶点用来定义几何体的点,将会以粒子的形态展示出来. 
 如果我们基于 `THREE.BoxGeometry` 对象创建 `THREE.Points` 对象, 我们将会得到8个粒子, 方块上的每个角一个点. 一般情况我们不会使用标准的 *THREE.js* 几何体来创建 `THREE.Points` ,而是从零开始手工将顶点添加到几何体上.
 
-import { Scene } from './02-basic-point-cloud.jsx';
+import { Scene } from './02-basic-points.jsx';
 
 <Scene />
 
@@ -14,7 +14,7 @@ import { Scene } from './02-basic-point-cloud.jsx';
 
 在这个例子中,我们创建了一个 `THREE.Points` 对象,并添加了15000个粒子,所有这些粒子都用 `THREE.PointsMaterial`.
 
-```jsx title='chapter-07/02-basic-point-cloud.jsx'
+```jsx title='chapter-07/02-basic-points.jsx'
 function createParticles(size, transparent, opacity, vertexColors, sizeAttenuation, color) {
 
     var geom = new THREE.BufferGeometry();

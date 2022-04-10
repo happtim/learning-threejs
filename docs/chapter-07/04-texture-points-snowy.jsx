@@ -1,60 +1,27 @@
-<!DOCTYPE html>
+import * as THREE from 'three';
+import React , { useRef, useEffect }from 'react';
+import { InitStats} from '/src/components/initStats';
+import { InitScene} from '/src/components/initScene';
+import { InitGui } from '/src/components/initGui';
 
-<html>
+export function Scene() {
 
-<head>
-    <title>Example 07.07 - Particles - Snowy scene</title>
-    <script type="text/javascript" src="../libs/three.js"></script>
+    const ref = useRef(null);
 
-    <script type="text/javascript" src="../libs/stats.js"></script>
-    <script type="text/javascript" src="../libs/dat.gui.js"></script>
-    <style>
-        body {
-            /* set margin to 0 and overflow to hidden, to go fullscreen */
-            margin: 0;
-            overflow: hidden;
-            background-color: #000000;
-        }
-    </style>
-</head>
-<body>
+    useEffect(()=>{
 
-<div id="Stats-output">
-</div>
-<!-- Div which will hold the Output -->
-<div id="WebGL-output">
-</div>
+        const div = ref.current;
+        var [scene, camera, renderer] = InitScene(div);
+        var stats = InitStats('b');
+        var gui = InitGui('b');
 
-<!-- Javascript code that runs our Three.js examples -->
-<script type="text/javascript">
-
-    // once everything is loaded, we run our Three.js stuff.
-    function init() {
-
-        var stats = initStats();
-
-        // create a scene, that will hold all our elements such as objects, cameras and lights.
-        var scene = new THREE.Scene();
-
-        // create a camera, which defines where we're looking at.
-        var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 200);
-
-        // create a render and set the size
-        var webGLRenderer = new THREE.WebGLRenderer();
-        webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
-        webGLRenderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setClearColor(new THREE.Color(0x000000));
 
         // position and point the camera to the center of the scene
         camera.position.x = 20;
         camera.position.y = 40;
         camera.position.z = 110;
         camera.lookAt(new THREE.Vector3(20, 30, 0));
-
-        // add the output of the renderer to the html element
-        document.getElementById("WebGL-output").appendChild(webGLRenderer.domElement);
-
-        var system1;
-        var system2;
 
         var controls = new function () {
             this.size = 10;
@@ -67,7 +34,7 @@
             this.redraw = function () {
                 var toRemove = [];
                 scene.children.forEach(function (child) {
-                    if (child instanceof THREE.PointCloud) {
+                    if (child instanceof THREE.Points) {
                         toRemove.push(child);
                     }
                 });
@@ -78,7 +45,6 @@
             };
         };
 
-        var gui = new dat.GUI();
         gui.add(controls, 'size', 0, 20).onChange(controls.redraw);
         gui.add(controls, 'transparent').onChange(controls.redraw);
         gui.add(controls, 'opacity', 0, 1).onChange(controls.redraw);
@@ -87,17 +53,13 @@
 
         controls.redraw();
 
-        render();
-
         function createPointCloud(name, texture, size, transparent, opacity, sizeAttenuation, color) {
-            var geom = new THREE.Geometry();
 
-            var color = new THREE.Color(color);
-            color.setHSL(color.getHSL().h,
-                    color.getHSL().s,
-                    (Math.random()) * color.getHSL().l);
+            var targetColor = new THREE.Color();
+            var color = new THREE.Color(color).getHSL(targetColor);
+            color.setHSL(targetColor.h, targetColor.s, (Math.random()) * targetColor.l);
 
-            var material = new THREE.PointCloudMaterial({
+            var material = new THREE.PointsMaterial({
                 size: size,
                 transparent: transparent,
                 opacity: opacity,
@@ -108,6 +70,7 @@
                 color: color
             });
 
+            let vertices = [];
             var range = 40;
             for (var i = 0; i < 50; i++) {
                 var particle = new THREE.Vector3(
@@ -117,21 +80,25 @@
                 particle.velocityY = 0.1 + Math.random() / 5;
                 particle.velocityX = (Math.random() - 0.5) / 3;
                 particle.velocityZ = (Math.random() - 0.5) / 3;
-                geom.vertices.push(particle);
+                vertices.push(particle);
             }
 
-            var system = new THREE.PointCloud(geom, material);
+            var geom = new THREE.BufferGeometry();
+            geom.setFromPoints(vertices);
+            geom.userData = vertices;
+
+            var system = new THREE.Points(geom, material);
             system.name = name;
-            system.sortParticles = true;
+
             return system;
         }
 
         function createPointClouds(size, transparent, opacity, sizeAttenuation, color) {
 
-            var texture1 = THREE.ImageUtils.loadTexture("../assets/textures/particles/snowflake1.png");
-            var texture2 = THREE.ImageUtils.loadTexture("../assets/textures/particles/snowflake2.png");
-            var texture3 = THREE.ImageUtils.loadTexture("../assets/textures/particles/snowflake3.png");
-            var texture4 = THREE.ImageUtils.loadTexture("../assets/textures/particles/snowflake5.png");
+            var texture1 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake1.png");
+            var texture2 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake2.png");
+            var texture3 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake3.png");
+            var texture4 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake5.png");
 
             scene.add(createPointCloud("system1", texture1, size, transparent, opacity, sizeAttenuation, color));
             scene.add(createPointCloud("system2", texture2, size, transparent, opacity, sizeAttenuation, color));
@@ -139,14 +106,15 @@
             scene.add(createPointCloud("system4", texture4, size, transparent, opacity, sizeAttenuation, color));
         }
 
+        render();
 
         function render() {
 
             stats.update();
 
             scene.children.forEach(function (child) {
-                if (child instanceof THREE.PointCloud) {
-                    var vertices = child.geometry.vertices;
+                if (child instanceof THREE.Points) {
+                    var vertices = child.geometry.userData;
                     vertices.forEach(function (v) {
                         v.y = v.y - (v.velocityY);
                         v.x = v.x - (v.velocityX);
@@ -156,31 +124,32 @@
                         if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
                         if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
                     });
+
+                    child.geometry.setFromPoints(vertices);
                 }
             });
 
             requestAnimationFrame(render);
-            webGLRenderer.render(scene, camera);
+            renderer.render(scene, camera);
         }
 
-        function initStats() {
+    },[]);
 
-            var stats = new Stats();
-            stats.setMode(0); // 0: fps, 1: ms
+    return (
+   
+        <div
+            style={{
+                height: 500 ,
+                position:'relative'
+            }}
+            ref={ref}
+        >
+        <div id="Stats-output-b" >
+        </div>
+        <div id="Gui-output-b">
+        </div>
+        </div>
+    );
+}  
 
-            // Align top-left
-            stats.domElement.style.position = 'absolute';
-            stats.domElement.style.left = '0px';
-            stats.domElement.style.top = '0px';
 
-            document.getElementById("Stats-output").appendChild(stats.domElement);
-
-            return stats;
-        }
-
-
-    }
-    window.onload = init;
-</script>
-</body>
-</html>

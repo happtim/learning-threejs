@@ -53,7 +53,6 @@ export function Scene() {
 
         function createParticles(size, transparent, opacity, vertexColors, sizeAttenuation, color) {
 
-
             var geom = new THREE.BufferGeometry();
             var material = new THREE.PointsMaterial({
                 size: size,

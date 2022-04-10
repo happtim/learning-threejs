@@ -1,0 +1,184 @@
+---
+    title: '使用Texture(纹理)样式化粒子'
+---
+
+之前章节介绍了使用canvas对 `THREE.Points` 和单个 `THREE.Sprite` 对象进行样式化 对象进行样式化.
+其实也可以使用 `THREE.TextureLoader().load()` 加载外部图像为 `THREE.Texture` 的方式样式化粒子.
+
+import { Scene } from './04-texture-points-rain.jsx';
+
+<Scene />
+
+<br/>
+
+我们可以再 `static/assets/textures/particles` 文件夹下找到几个雨滴的纹理.
+纹理要求将在后面讲解到,限制只要知道纹理应该是正方形的,并且尺寸最好是2的幂 (例如64x64,128x128,256x256)
+
+在本例使用的如下的纹理:
+
+![rain](/assets/textures/particles/raindrop-3.png)
+
+该图片使用了黑色的背景,为了能更好的正确融合,并且展示了一个雨滴的形状和颜色.
+在  `HTREE.PointsMaterial` 中使用纹理之前,我们首先加载它
+
+```js title='chapter-07/04-texture-points-rain.jsx'
+var texture = new THREE.TextureLoader().load("/assets/textures/particles/raindrop-3.png");
+```
+
+通过这行代码,我们就可加载到纹理,这样我们就可以在材质上使用它.
+
+```js title='chapter-07/04-texture-points-rain.jsx'
+var material = new THREE.PointsMaterial({
+    size: size,
+    transparent: transparent,
+    opacity: opacity,
+    map: texture,
+    blending: THREE.AdditiveBlending,
+    sizeAttenuation: sizeAttenuation,
+    color: color
+});
+```
+
+之前章节已经讨论过这些属性, 需要特殊讲解的就是 `map` 属性指向我们加载的纹理,
+而且我们还将blending(融合)模式设置成了 `THREE.AdditiveBlending`. 
+这个融合模式的含义是,在画新像素时背景像素的颜色会添加到新的像素上.
+对于我们雨滴纹理来说,这意味着黑色的背景不会显式出来.
+另外一种合理的方式就是将纹理里的黑色背景换成透明背景.这样可以达到相同的效果.
+
+这样就完成了 `THREE.Points` 的样式化.例子的粒子还在移动. 在前面的例子中我们移动了整个对象.
+这次我们单独移动每个粒子的位置. 每个粒子都是构成 `THREE.Points` 对象几何体上的顶点.
+
+```js title='chapter-07/04-texture-points-rain.jsx'
+var range = 40;
+for (var i = 0; i < 1500; i++) {
+    var point = new THREE.Vector3(
+            Math.random() * range - range / 2,
+            Math.random() * range * 1.5,
+            Math.random() * range - range / 2);
+    point.velocityY = 0.1 + Math.random() / 5;
+    point.velocityX = (Math.random() - 0.5) / 3;
+    vertices.push(point);
+}
+
+var geometry = new THREE.BufferGeometry();
+geometry.setFromPoints(vertices);
+```
+
+在这里，我们给每个粒子（THREE.Vector3对象）添加了两个额外的属性：velocityX和velocityY。
+第一个属性定义粒子（雨滴）如何水平移动，而第二个属性定义雨滴以多快的速度落下。
+横向运动速度的范围是-0.16～+0.16，纵向运动速度的范围是0.1～0.3。
+现在每个雨滴都有自己的速度，我们可以在渲染循环体中移动每一个粒子:
+
+```js title='chapter-07/04-texture-points-rain.jsx'
+let positions = [];
+vertices.forEach(function (v) {
+    v.y = v.y - (v.velocityY);
+    v.x = v.x - (v.velocityX);
+
+    if (v.y <= 0) v.y = 60;
+    if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+    positions.push(v.x,v.y,v.z);
+});
+
+cloud.geometry.setAttribute('position',new THREE.BufferAttribute(new Float32Array(positions),3));
+```
+我们从参数中获取用来创建THREE.Points对象的所有顶点。对于每个粒子，我们用velocityX和velocityY来改变它们的当前位置。
+最后两行代码用来保证粒子处于我们定义的范围内。
+如果v.y的位置低于0，我们就把雨滴放回顶部；如果v.x的位置到达任何一条边界，我们就反转横向速度，让雨滴反弹。
+
+将代码中的雨滴大小调节变大后,你可能会注意到画面中很多重叠的雨滴之间有不太理想的层叠效果.
+由于上面代码中 z坐标使用的 Math.random()*range-range/2 的方法来计算随机的z坐标,因此z轴是乱序的状态.
+为了修正则会个问题,我们只需要将z的坐标赋值为 i+(i/100)
+
+我们开另一个例子, 这次我们模拟的不是雨是雪,另外我们不仅仅使用单一纹理,而是5个不同的图片.
+
+import { Scene as SceneB } from './04-texture-points-snowy.jsx';
+
+<SceneB />
+
+<br/>
+
+`THREE.Points` 只能使用一个材质. 如果要使用多个材质,那么只能使用多个 `THREE.Points` 实例:
+
+```js title='chapter-07/04-texture-points-sonwy.jsx'
+function createPointClouds(size, transparent, opacity, sizeAttenuation, color) {
+
+    var texture1 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake1.png");
+    var texture2 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake2.png");
+    var texture3 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake3.png");
+    var texture4 = new THREE.TextureLoader().load("/assets/textures/particles/snowflake5.png");
+
+    scene.add(createPointCloud("system1", texture1, size, transparent, opacity, sizeAttenuation, color));
+    scene.add(createPointCloud("system2", texture2, size, transparent, opacity, sizeAttenuation, color));
+    scene.add(createPointCloud("system3", texture3, size, transparent, opacity, sizeAttenuation, color));
+    scene.add(createPointCloud("system4", texture4, size, transparent, opacity, sizeAttenuation, color));
+}
+```
+在这里我们对纹理分别进行加载,然后将所有信息传递给创建 `THREE.Points` 的函数,代码如下:
+
+```js title='chapter-07/04-texture-points-sonwy.jsx'
+function createPointCloud(name, texture, size, transparent, opacity, sizeAttenuation, color) {
+
+    var targetColor = new THREE.Color();
+    var color = new THREE.Color(color).getHSL(targetColor);
+    color.setHSL(targetColor.h, targetColor.s, (Math.random()) * targetColor.l);
+
+    var material = new THREE.PointsMaterial({
+        size: size,
+        transparent: transparent,
+        opacity: opacity,
+        map: texture,
+        blending: THREE.AdditiveBlending,
+        depthWrite: false,
+        sizeAttenuation: sizeAttenuation,
+        color: color
+    });
+
+    let vertices = [];
+    var range = 40;
+    for (var i = 0; i < 50; i++) {
+        var particle = new THREE.Vector3(
+                Math.random() * range - range / 2,
+                Math.random() * range * 1.5,
+                Math.random() * range - range / 2);
+        particle.velocityY = 0.1 + Math.random() / 5;
+        particle.velocityX = (Math.random() - 0.5) / 3;
+        particle.velocityZ = (Math.random() - 0.5) / 3;
+        vertices.push(particle);
+    }
+
+    var geom = new THREE.BufferGeometry();
+    geom.setFromPoints(vertices);
+    geom.userData = vertices;
+
+    var system = new THREE.Points(geom, material);
+    system.name = name;
+
+    return system;
+}
+```
+
+在这个函数里我们首先要做的是给被渲染的粒子的特定纹理指定颜色。做法是随机改变传入的颜色的lightness（亮度）值。接下来是像以前一样创建材质。这里唯一的改变是将depthWrite属性设置为false。这个属性决定这个对象是否影响WebGL的深度缓存。将它设置为false，可以保证在各个的位置上渲染的雪花之间不会互相影响。如果这个属性不设置为false，那么当一个粒子在另一个THREE.Points对象的粒子前面时，你可能会看到纹理的黑色背景。
+
+这段最后一步就是放置随机粒子,并设置每个粒子的速度.
+
+```js title='chapter-07/04-texture-points-sonwy.jsx'
+scene.children.forEach(function (child) {
+    if (child instanceof THREE.Points) {
+        var vertices = child.geometry.userData;
+        vertices.forEach(function (v) {
+            v.y = v.y - (v.velocityY);
+            v.x = v.x - (v.velocityX);
+            v.z = v.z - (v.velocityZ);
+
+            if (v.y <= 0) v.y = 60;
+            if (v.x <= -20 || v.x >= 20) v.velocityX = v.velocityX * -1;
+            if (v.z <= -20 || v.z >= 20) v.velocityZ = v.velocityZ * -1;
+        });
+
+        child.geometry.setFromPoints(vertices);
+    }
+});
+```
+
+通过这种方式，我们就可以为不同的粒子赋予不同的材质。但是这种方法有一些局限：我们想要的纹理种类越多，那么需要创建和管理的粒子系统也就越多。如果你有一组数量不多的不同样式的粒子，那么最好使用我们在本章开头展示的THREE.Sprite对象。
